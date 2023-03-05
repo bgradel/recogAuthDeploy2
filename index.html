@@ -1,0 +1,2486 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://www.youtube.com/player_api"></script>
+<script src="https://smtpjs.com/v3/smtp.js">
+</script>
+
+
+<form name='mturk_form' id='mturk_form'>
+  <input type='hidden' value='' name='assignmentId' id='assignmentId' />
+ 
+  
+  <!-- Screen 1: userCode -->
+  <div class="tab">
+  <h1> Please submit the User ID number given to you.</h1>
+    <div  id="divSurvey" style="overflow:auto; ">
+      <div>
+        <center>
+        <input type="text" id="userId" name="userId" maxlength="5" size="5" pattern="[0-9]+" style="font-size:35px;"/>
+        <button class="my-button" type="button" id="nextBtnUserID" onclick="submitUserId()">Submit User ID</button>
+        
+        </center>
+      </div>
+    </div>
+  </div>
+  
+  
+  <!-- Screen 2: try again -->
+  <div class="tab">
+  <h1> The user code you submitted is not in our system. Please try again.</h1>
+   <center>
+      <button class="my-button" type="button" id="prevButtonTryAgain" onclick="nextPrev(-1)">Try Again</button>
+   </center>
+  </div>
+  
+    <!-- Screen 3: PracticeOrLogin -->
+  <div class="tab">
+  <h1> Please select "Practice Mode" to try out the login system or select "Record Logins" to start the 5 recorded login attempts</h1>
+    <div  id="divbuttonOptions" style="overflow:auto; ">
+      <div>
+        <center>
+        <button class="my-button" type="button" id="nextBtnUserID" onclick="startPracticeMode()">Practice Mode</button>
+        </center>
+        <center>
+        <button class="my-button" type="button" id="nextBtnUserID" onclick="startRecordingLogins()">Record Logins</button>
+        </center>
+      </div>
+    </div>
+  </div>
+  
+  
+
+  <!-- Screen 4: Example login attempt face screen -->
+  <div class="tab">
+    <div>
+      <h2 id="selectFacesEx">Select the 1-3 photos of faces that you think are correct</h2>
+      <div class="grid-container" id="divLoginGridEx">
+          <span>
+            <div class="grid-item" id="gridFaceEx_0">
+            </div>
+            <div class="grid-item" id="gridFaceEx_1">
+            </div>
+            <div class="grid-item" id="gridFaceEx_2">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFaceEx_3">
+            </div>
+            <div class="grid-item" id="gridFaceEx_4">
+            </div>
+            <div class="grid-item" id="gridFaceEx_5">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFaceEx_6">
+            </div>
+            <div class="grid-item" id="gridFaceEx_7">
+            </div>
+            <div class="grid-item" id="gridFaceEx_8">
+            </div>
+          </span>
+       
+      </div>
+      <div class="modal" id="modalExVideoFace">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnExVideoFace">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab1SubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab1ClearAllBtn"  onclick="clearAll('face',1)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Screen 5: Example login attempt secondary image association screen -->
+  <div class="tab">
+    <div>
+      <h2>Select the animal photo that you think the user associated with this face photo</h2>
+      <center><img src='' class="grid-img"  id="screen4FaceImg"/></center>
+      <div class="grid-container-animal" id="divAnimalsGridEx">
+            <div class="grid-item" id="gridAnimalEx_0">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_1">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_2">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_3">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_4">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_5">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_6">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_7">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_8">
+            </div>
+            <div class="grid-item" id="gridAnimalEx_9">
+            </div>
+      </div>
+      <div class="modal" id="modalExVideoAnimal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnExVideoAnimal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab1AnimalClearAllBtn" onclick="clearAll('animal',1)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab1AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 6: Try one more time screen -->
+  <div class="tab">
+    <h1 id = 'login-statusEx'>"Login successful!"</h1>
+    
+    <center>
+      <img id='status-imageEx' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300"/>
+    </center>
+    <h1 id="loginExText1">Please continue to the rest of the study</h1>
+    <h2 id="loginExText2">You will have to log in 5 times</h2>
+      <center>
+        <button class="my-button" type="button" id="nextBtnToLogin" onclick="nextPrev(1)">Continue</button>
+      </center>
+      <center>
+        <button class="my-button" type="button" id="returnButton" onclick="finishPracticing()">Finish Practicing</button>
+      </center>
+  </div>
+
+  
+  <!-- Screen 9: Login attempt 1 face screen-->
+  <div class="tab">
+    <div>
+      <h2 id="selectFaces1">Select the 1-3 photos of faces that you think are correct</h2>
+      <div class="grid-container" id="divLoginGrid1">
+          <span>
+            <div class="grid-item" id="gridFace1_0">
+            </div>
+            <div class="grid-item" id="gridFace1_1">
+            </div>
+            <div class="grid-item" id="gridFace1_2">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace1_3">
+            </div>
+            <div class="grid-item" id="gridFace1_4">
+            </div>
+            <div class="grid-item" id="gridFace1_5">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace1_6">
+            </div>
+            <div class="grid-item" id="gridFace1_7">
+            </div>
+            <div class="grid-item" id="gridFace1_8">
+            </div>
+          </span>
+      </div>
+      <div class="modal" id="modalVideo1Face">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo1Face">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab2SubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab2ClearAllBtn" onclick="clearAll('face',2)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 10: Login attempt 1 sceondary image association screen -->
+  <div class="tab">
+    <div>
+      <h2>Select the animal photo that you think the user associated with this face photo</h2>
+      <center><img src='' class="grid-img"  id="screen8FaceImg"/></center>
+      <div class="grid-container-animal" id="divAnimalsGrid1">
+            <div class="grid-item" id="gridAnimal1_0">
+            </div>
+            <div class="grid-item" id="gridAnimal1_1">
+            </div>
+            <div class="grid-item" id="gridAnimal1_2">
+            </div>
+            <div class="grid-item" id="gridAnimal1_3">
+            </div>
+            <div class="grid-item" id="gridAnimal1_4">
+            </div>
+            <div class="grid-item" id="gridAnimal1_5">
+            </div>
+            <div class="grid-item" id="gridAnimal1_6">
+            </div>
+            <div class="grid-item" id="gridAnimal1_7">
+            </div>
+            <div class="grid-item" id="gridAnimal1_8">
+            </div>
+            <div class="grid-item" id="gridAnimal1_9">
+            </div>
+      </div>
+      <div class="modal" id="modalVideo1Animal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo1Animal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab2AnimalClearAllBtn"  onclick="clearAll('animal',2)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab2AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 11: Login attempt 1 results screen -->
+  <div class="tab">
+    <h1 id='login-status1'>Login successful</h1>
+    <center>
+      <img id='status-image1' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300" />
+    </center>
+    <h2 id='login-tries1' >You have 4 login attempts remaining</h2>
+    <h2 id='continueText1', style="display:none">Please continue. You have 4 out of 5 logins remaining.</h2>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+
+  
+ <!-- Screen 12: Login attempt 2 face screen -->
+  <div class="tab">
+    <div>
+      <h2 id="selectFaces2">Select the 1-3 photos of faces that you think are correct</h2>
+      <div class="grid-container" id="divLoginGrid2">
+          <span>
+            <div class="grid-item" id="gridFace2_0">
+            </div>
+            <div class="grid-item" id="gridFace2_1">
+            </div>
+            <div class="grid-item" id="gridFace2_2">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace2_3">
+            </div>
+            <div class="grid-item" id="gridFace2_4">
+            </div>
+            <div class="grid-item" id="gridFace2_5">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace2_6">
+            </div>
+            <div class="grid-item" id="gridFace2_7">
+            </div>
+            <div class="grid-item" id="gridFace2_8">
+            </div>
+          </span>
+      </div>
+      <div class="modal" id="modalVideo2Face">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo2Face">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab3SubmitBtn"   onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab3ClearAllBtn" onclick="clearAll('face',3)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 13: Login attempt 2 sceondary image association screen -->
+  <div class="tab">
+    <div>
+      <h2>Select the animal photo that you think the user associated with this face photo</h2>
+      <center><img src='' class="grid-img"  id="screen12FaceImg"/></center>
+      <div class="grid-container-animal" id="divAnimalsGrid2">
+            <div class="grid-item" id="gridAnimal2_0">
+            </div>
+            <div class="grid-item" id="gridAnimal2_1">
+            </div>
+            <div class="grid-item" id="gridAnimal2_2">
+            </div>
+            <div class="grid-item" id="gridAnimal2_3">
+            </div>
+            <div class="grid-item" id="gridAnimal2_4">
+            </div>
+            <div class="grid-item" id="gridAnimal2_5">
+            </div>
+            <div class="grid-item" id="gridAnimal2_6">
+            </div>
+            <div class="grid-item" id="gridAnimal2_7">
+            </div>
+            <div class="grid-item" id="gridAnimal2_8">
+            </div>
+            <div class="grid-item" id="gridAnimal2_9">
+            </div>
+      </div>
+      <div class="modal" id="modalVideo2Animal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo2Animal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab3AnimalClearAllBtn"  onclick="clearAll('animal',3)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab3AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 14: Login attempt 2 results screen -->
+  <div class="tab">
+    <h1 id='login-status2'>Login successful</h1>
+    <center>
+      <img id='status-image2' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300" />
+    </center>
+    <h2 id='login-tries2'>You have 2 login attempts remaining</h2>
+    <h2 id='continueText2', style="display:none">Please continue. You have 3 out of 5 logins remaining.</h2>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+  
+
+ <!-- Screen 15: Login attempt 3 face screen -->
+  <div class="tab">
+    <div>
+      <h2 id="selectFaces3">Select the 1-3 photos of faces that you think are correct</h2>
+      <div class="grid-container" id="divLoginGrid3">
+          <span>
+            <div class="grid-item" id="gridFace3_0">
+            </div>
+            <div class="grid-item" id="gridFace3_1">
+            </div>
+            <div class="grid-item" id="gridFace3_2">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace3_3">
+            </div>
+            <div class="grid-item" id="gridFace3_4">
+            </div>
+            <div class="grid-item" id="gridFace3_5">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace3_6">
+            </div>
+            <div class="grid-item" id="gridFace3_7">
+            </div>
+            <div class="grid-item" id="gridFace3_8">
+            </div>
+          </span>
+      </div>
+      <div class="modal" id="modalVideo3Face">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo3Face">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab4SubmitBtn"   onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab4ClearAllBtn" onclick="clearAll('face',4)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 16: Login attempt 3 secondary image association screen -->
+  <div class="tab">
+    <div>
+      <h2>Select the animal photo that you think the user associated with this face photo</h2>
+      <center><img src='' class="grid-img"  id="screen16FaceImg"/></center>
+      <div class="grid-container-animal" id="divAnimalsGrid3">
+            <div class="grid-item" id="gridAnimal3_0">
+            </div>
+            <div class="grid-item" id="gridAnimal3_1">
+            </div>
+            <div class="grid-item" id="gridAnimal3_2">
+            </div>
+            <div class="grid-item" id="gridAnimal3_3">
+            </div>
+            <div class="grid-item" id="gridAnimal3_4">
+            </div>
+            <div class="grid-item" id="gridAnimal3_5">
+            </div>
+            <div class="grid-item" id="gridAnimal3_6">
+            </div>
+            <div class="grid-item" id="gridAnimal3_7">
+            </div>
+            <div class="grid-item" id="gridAnimal3_8">
+            </div>
+            <div class="grid-item" id="gridAnimal3_9">
+            </div>
+      </div>
+      <div class="modal" id="modalVideo3Animal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo3Animal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab4AnimalClearAllBtn"  onclick="clearAll('animal',4)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab4AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 17: Login attempt 3 results screen -->
+  <div class="tab">
+    <h1 id='login-status3'>Login successful</h1>
+    <center>
+      <img id='status-image3' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300" />
+    </center>
+    <h2 id='login-tries3'>You have 2 login attempts remaining</h2>
+    <h2 id='continueText3', style="display:none">Please continue. You have 2 out of 5 logins remaining.</h2>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+  
+
+ <!-- Screen 18: Login attempt 4 face screen -->
+  <div class="tab">
+    <div>
+      <h2 id="selectFaces4">Select the 1-3 photos of faces that you think are correct</h2>
+      <div class="grid-container" id="divLoginGrid4">
+          <span>
+            <div class="grid-item" id="gridFace4_0">
+            </div>
+            <div class="grid-item" id="gridFace4_1">
+            </div>
+            <div class="grid-item" id="gridFace4_2">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace4_3">
+            </div>
+            <div class="grid-item" id="gridFace4_4">
+            </div>
+            <div class="grid-item" id="gridFace4_5">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace4_6">
+            </div>
+            <div class="grid-item" id="gridFace4_7">
+            </div>
+            <div class="grid-item" id="gridFace4_8">
+            </div>
+          </span>
+      </div>
+      <div class="modal" id="modalVideo4Face">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo4Face">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab5SubmitBtn"   onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab5ClearAllBtn" onclick="clearAll('face',5)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 19: Login attempt 4 sceondary image association screen -->
+  <div class="tab">
+    <div>
+      <h2>Select the animal photo that you think the user associated with this face photo</h2>
+      <center><img src='' class="grid-img"  id="screen21FaceImg"/></center>
+      <div class="grid-container-animal" id="divAnimalsGrid4">
+            <div class="grid-item" id="gridAnimal4_0">
+            </div>
+            <div class="grid-item" id="gridAnimal4_1">
+            </div>
+            <div class="grid-item" id="gridAnimal4_2">
+            </div>
+            <div class="grid-item" id="gridAnimal4_3">
+            </div>
+            <div class="grid-item" id="gridAnimal4_4">
+            </div>
+            <div class="grid-item" id="gridAnimal4_5">
+            </div>
+            <div class="grid-item" id="gridAnimal4_6">
+            </div>
+            <div class="grid-item" id="gridAnimal4_7">
+            </div>
+            <div class="grid-item" id="gridAnimal4_8">
+            </div>
+            <div class="grid-item" id="gridAnimal4_9">
+            </div>
+          </span>
+      </div>
+      <div class="modal" id="modalVideo4Animal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo4Animal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab5AnimalClearAllBtn"  onclick="clearAll('animal',5)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab5AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 20: Login attempt 4 results screen -->
+  <div class="tab">
+    <h1 id='login-status4'>Login successful</h1>
+    <center>
+      <img id='status-image4' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300" />
+    </center>
+    <h2 id='login-tries4'>You have 1 login attempt remaining</h2>
+    <h2 id='continueText4', style="display:none">Please continue. You have 1 login out of 5 remaining.</h2>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+ 
+  
+  
+ <!-- Screen 21: Login attempt 5 face screen -->
+  <div class="tab">
+    <div>
+      <h2 id="selectFaces5">Select the 1-3 photos of faces that you think are correct</h2>
+      <div class="grid-container" id="divLoginGrid5">
+          <span>
+            <div class="grid-item" id="gridFace5_0">
+            </div>
+            <div class="grid-item" id="gridFace5_1">
+            </div>
+            <div class="grid-item" id="gridFace5_2">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace5_3">
+            </div>
+            <div class="grid-item" id="gridFace5_4">
+            </div>
+            <div class="grid-item" id="gridFace5_5">
+            </div>
+          </span>
+          <span>
+            <div class="grid-item" id="gridFace5_6">
+            </div>
+            <div class="grid-item" id="gridFace5_7">
+            </div>
+            <div class="grid-item" id="gridFace5_8">
+            </div>
+          </span>
+      </div>
+      <div class="modal" id="modalVideo5Face">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo5Face">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab6SubmitBtn"   onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab6ClearAllBtn" onclick="clearAll('face',6)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 22: Login attempt 5 sceondary image association screen -->
+  <div class="tab">
+    <div>
+      <h2>Select the animal photo that you think the user associated with this face photo</h2>
+      <center><img src='' class="grid-img"  id="screen26FaceImg"/></center>
+      <div class="grid-container-animal" id="divAnimalsGrid5">
+            <div class="grid-item" id="gridAnimal5_0">
+            </div>
+            <div class="grid-item" id="gridAnimal5_1">
+            </div>
+            <div class="grid-item" id="gridAnimal5_2">
+            </div>
+            <div class="grid-item" id="gridAnimal5_3">
+            </div>
+            <div class="grid-item" id="gridAnimal5_4">
+            </div>
+            <div class="grid-item" id="gridAnimal5_5">
+            </div>
+            <div class="grid-item" id="gridAnimal5_6">
+            </div>
+            <div class="grid-item" id="gridAnimal5_7">
+            </div>
+            <div class="grid-item" id="gridAnimal5_8">
+            </div>
+            <div class="grid-item" id="gridAnimal5_9">
+            </div>
+      </div>
+      <div class="modal" id="modalVideo5Animal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo5Animal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab6AnimalClearAllBtn"  onclick="clearAll('animal',6)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab6AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 23: Login attempt 5 results screen -->
+  <div class="tab">
+    <h1 id='login-status5'>Login successful</h1>
+    <center>
+      <img id='status-image5' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300" />
+    </center>
+    <h2 id='login-tries5'>You have finished your final login attempt. </h2>
+    <h2 id='continueText5', style="display:none">Thank you for completing your final login!</h2>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Screen 24: Thank you -->
+  <div class="tab">
+    <h2>You are finished logging in! Thank you for participating!</h2>
+    <h2>Please tell the researcher that you have finished.</h2>
+    <br/><br/><br/>
+     <div style="overflow:auto;">
+
+    </div>
+  </div>
+  
+  
+
+
+
+
+<!-- Circles which indicates the steps of the form: -->
+<div style="text-align:center;margin-top:40px;">
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+</div>
+</form>
+<script>
+////////////////////////////////////////////////////////////////////////////////////
+// buildImageLists code
+////////////////////////////////////////////////////////////////////////////////////
+
+const EXAMPLE_VIDEO_FACE_IMAGES_NOT_DISTORTED = [
+    'assets/faces/user0/userPhotos/not_distorted/0.jpg',
+    'assets/faces/user0/userPhotos/not_distorted/1.jpg',
+    'assets/faces/user0/userPhotos/not_distorted/2.jpg',
+    'assets/faces/user0/chaff/not_distorted/0.jpg',
+    'assets/faces/user0/chaff/not_distorted/1.jpg',
+    'assets/faces/user0/chaff/not_distorted/2.jpg',
+    'assets/faces/user0/chaff/not_distorted/3.jpg',
+    'assets/faces/user0/chaff/not_distorted/4.jpg',
+    'assets/faces/user0/chaff/not_distorted/5.jpg',
+];
+
+const EXAMPLE_VIDEO_FACE_IMAGES_BLURRED = [
+    'assets/faces/user0/userPhotos/blur/0_blur.jpg',
+    'assets/faces/user0/userPhotos/blur/1_blur.jpg',
+    'assets/faces/user0/userPhotos/blur/2_blur.jpg',
+    'assets/faces/user0/chaff/blur/0_blur.jpg',
+    'assets/faces/user0/chaff/blur/1_blur.jpg',
+    'assets/faces/user0/chaff/blur/2_blur.jpg',
+    'assets/faces/user0/chaff/blur/3_blur.jpg',
+    'assets/faces/user0/chaff/blur/4_blur.jpg',
+    'assets/faces/user0/chaff/blur/5_blur.jpg',
+];
+  
+const DISTORTIONS = [
+    'pixelate'
+];
+
+const DISTORTIONS2 = [
+    'blur',
+    'edges',
+    'polar',
+    'pixelate',
+    'negative'
+];
+
+var currentDistortions = [...DISTORTIONS2];
+  
+const NUMBER_FACE_IMAGES = 9;
+const NUMBER_ANIMAL_IMAGES = 10;
+const NUM_DISPLAY_FACES = 12;
+
+const NUMBER_ANIMAL_SAMPLE_PHOTOS = 105;
+
+const ANIMAL_LOCATION = "./assets/animals"
+const DISPLAY_LOCATION = "https://bgradel.github.io/recogauthDeploy/assets/close_adversary/"
+
+const LOGIN_FAILED = "./assets/icons/X.png"
+
+class AuthenticationImage { 
+      constructor(index, loc, correct) {
+          this.index = index;
+          this.location = loc;
+          this.correct = correct;
+      } 
+  }
+    AuthenticationImage.prototype.toString = function authImgToString() {
+    return this.index.toString() + ', ' + this.location + ', ' + this.correct.toString() ;
+};
+  
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function createArrayOfIndexes(size){
+    var indexes = [];
+    for (var i = 0; i < size; i++) {
+        indexes.push(i);
+    }
+    return indexes;
+}
+  
+function getRandomInt(max){
+    return Math.floor(Math.random() * max);
+}
+
+function getExampleAssociationDict(numUserPhotos){
+    var exampleAssociationMap = {};
+    n = 0;
+    while(n < numUserPhotos){
+        var randomPicker = createArrayOfIndexes(NUMBER_ANIMAL_SAMPLE_PHOTOS);
+        shuffle(randomPicker);
+        const animalList = [];
+        m = 0;
+        while(m < NUMBER_ANIMAL_IMAGES){
+            index = randomPicker.pop();
+            imageLocation = getAnimalImageLink(index);
+
+            if (m === 0){
+                animalList.push(new AuthenticationImage(index, imageLocation, true));
+            }
+            else{
+                animalList.push(new AuthenticationImage(index, imageLocation, false));
+            }
+            m ++;
+        }
+        exampleAssociationMap[n] = animalList;
+        n ++;
+    }
+    return exampleAssociationMap;
+}
+
+class User {
+    constructor(id, numUserPhotos, numChaffPhotos) {
+        this.id = id;
+        this.numUserPhotos = numUserPhotos;
+        this.numChaffPhotos = numChaffPhotos;
+        this.assetDirectory = "./assets/usability/user" + id.toString();
+        this.userDirectory = this.assetDirectory + '/' + "userPhotos";
+        this.chaffDirectory = this.assetDirectory + '/' + "chaff";
+        this.associationDict = getExampleAssociationDict(numUserPhotos);
+    }
+}
+
+function getImageFileName(index, baseDirectory,  distortionType){
+    if (distortionType == 'not_distorted'){
+        return baseDirectory + '/' 
+            + distortionType + '/' 
+            + index.toString() + '.jpg';
+    }
+    else{
+        return baseDirectory + '/' 
+            + distortionType + '/'
+            + index.toString() + '_'  + distortionType + '.jpg';
+    }
+}
+
+class PassFacesUser {
+    constructor(id, PIN){
+        this.id=id;
+        this.correctFaces = PIN;
+    }
+}
+  
+function pickDistortion(replacement=true){
+    if (!replacement){
+        distortionIndex = getRandomInt(currentDistortions.length);
+        distortion = currentDistortions[distortionIndex];
+        currentDistortions.splice(distortionIndex, 1);
+        return distortion;
+    }
+    else{
+        return DISTORTIONS[getRandomInt(DISTORTIONS.length)];
+    }
+}
+  
+function chooseNumberOfUserImages(){
+    return getRandomInt(3) + 1;
+}
+
+function generateImageIndexes(numberOfImages, totalNumberOfImages){
+    var randomPicker = createArrayOfIndexes(totalNumberOfImages);
+    shuffle(randomPicker);
+
+    imageIndexList = [];
+
+    while (imageIndexList.length < numberOfImages) {
+        imageIndexList.push(randomPicker.pop());
+    }
+
+    return imageIndexList;
+} 
+
+function isMobileOrTablet() {
+   var isMobile= window.orientation > -1;
+   if(isMobile){
+    document.getElementById("mobileDiv").style.display = "block";
+    document.getElementById("desktopDiv").style.display = "none";
+   }else{
+    document.getElementById("mobileDiv").style.display = "none";
+    document.getElementById("desktopDiv").style.display = "block";
+   }
+}
+
+function getAnimalImageLink(index){
+    return ANIMAL_LOCATION + '/' + index.toString() + ".jpg";
+}
+  
+function getFaceImages(user, boolDistort, replacement=true){
+    numberOfUserImagesToChoose = chooseNumberOfUserImages();
+
+    distortionType = '';
+    if (boolDistort){
+        distortionType = pickDistortion(replacement);
+    }
+    else{
+        distortionType = 'not_distorted';
+    }
+
+    imageList = [];
+  
+    userImageIndexList = generateImageIndexes(numberOfUserImagesToChoose, user.numUserPhotos);
+    
+    for (var i = 0; i < userImageIndexList.length; i++){
+        index = userImageIndexList[i];
+        imageList.push(new AuthenticationImage(index,  getImageFileName(index, user.userDirectory, distortionType), true));
+    }
+
+    chaffImageIndexList = generateImageIndexes(NUMBER_FACE_IMAGES-numberOfUserImagesToChoose, user.numChaffPhotos);
+    for (var i = 0; i < chaffImageIndexList.length; i++){
+        //Adding an offset to all chaff images so they do not get mixed up with real images in the association dict.
+        chaff_index = chaffImageIndexList[i]
+        imageList.push(new AuthenticationImage(chaff_index+100, getImageFileName(chaff_index, user.chaffDirectory, distortionType), false));
+    }
+
+    shuffle(imageList);
+    return imageList;
+}
+
+function getAnimalImages(user, personImage){
+    //If the image is valid, we can return the association map result. Otherwise, I have to generate a bullshit one
+    animalList = [];
+    if (user.associationDict[personImage.index]){
+        animalList = user.associationDict[personImage.index];
+        shuffle(animalList);
+    }
+    else{
+        animalList = generateBullshitAnimalList();
+        user.associationDict[personImage.index] = animalList;
+    }
+    return animalList;
+}
+  
+function generateBullshitAnimalList(){
+    animalList = [];
+    var randomPicker = createArrayOfIndexes(NUMBER_ANIMAL_SAMPLE_PHOTOS);
+    shuffle(randomPicker);
+    n = 0;
+    while (n < NUMBER_ANIMAL_IMAGES){
+        index = randomPicker.pop();
+        //imageLocation = ANIMAL_LOCATION + '/' + index.toString() + ".jpg";
+        imageLink=getAnimalImageLink(index);
+        animalList.push(new AuthenticationImage(index, imageLink, false));
+        n++;
+    }
+    return animalList;
+}
+
+function getDisplayFaceLink(index, user){
+    return DISPLAY_LOCATION + "user" + user.id + '/' + "display" +  '/' + index.toString() + ".jpg";
+}
+
+function getDisplayFaces(user){
+
+    var displayFaceList = [];
+    for (var n = 0; n < NUM_DISPLAY_FACES; n++){
+        imageLocation = getDisplayFaceLink(n, user);
+        displayFaceList.push(new AuthenticationImage(n, imageLocation, true));
+    }
+    shuffle(displayFaceList);
+    return displayFaceList;
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+
+const dummyFaceList=[
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/0_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/1_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/3_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/4_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/6_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/7_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/17_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/64_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/65_blur.jpg",
+];
+
+const dummyAnimalList=[
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/0ace398f01.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/0b54dde5f5.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/0c1a3fdd20.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/1aac205025.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/2a8a6a6050.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/4cc653ca8b.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/5db978ce57.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/6c763d6f65.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/07c29966bd.jpg"
+];
+  
+const USER0AssociationDict={
+    0: [new AuthenticationImage(97, getAnimalImageLink(97), true),
+        new AuthenticationImage(77, getAnimalImageLink(77), false),
+        new AuthenticationImage(78, getAnimalImageLink(78), false),
+        new AuthenticationImage(10, getAnimalImageLink(10), false),
+        new AuthenticationImage(55, getAnimalImageLink(55), false),
+        new AuthenticationImage(69, getAnimalImageLink(69), false),
+        new AuthenticationImage(38, getAnimalImageLink(38), false),
+        new AuthenticationImage(85, getAnimalImageLink(85), false),
+        new AuthenticationImage(50, getAnimalImageLink(50), false),
+        new AuthenticationImage(6, getAnimalImageLink(6), false)],
+
+    1: [new AuthenticationImage(67, getAnimalImageLink(67), true),
+        new AuthenticationImage(101, getAnimalImageLink(101), false),
+        new AuthenticationImage(90, getAnimalImageLink(90), false),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(91, getAnimalImageLink(91), false),
+        new AuthenticationImage(30, getAnimalImageLink(30), false),
+        new AuthenticationImage(80, getAnimalImageLink(80), false),
+        new AuthenticationImage(73, getAnimalImageLink(73), false),
+        new AuthenticationImage(82, getAnimalImageLink(82), false),
+        new AuthenticationImage(10, getAnimalImageLink(10), false)],
+        
+    2: [new AuthenticationImage(25, getAnimalImageLink(25), true),
+        new AuthenticationImage(60, getAnimalImageLink(60), false),
+        new AuthenticationImage(9, getAnimalImageLink(9), false),
+        new AuthenticationImage(24, getAnimalImageLink(24), false),
+        new AuthenticationImage(75, getAnimalImageLink(75), false),
+        new AuthenticationImage(103, getAnimalImageLink(103), false),
+        new AuthenticationImage(80, getAnimalImageLink(80), false),
+        new AuthenticationImage(18, getAnimalImageLink(18), false),
+        new AuthenticationImage(102, getAnimalImageLink(102), false),
+        new AuthenticationImage(104, getAnimalImageLink(104), false)],
+        
+    3: [new AuthenticationImage(9, getAnimalImageLink(9), true),
+        new AuthenticationImage(79, getAnimalImageLink(79), false),
+        new AuthenticationImage(96, getAnimalImageLink(96), false),
+        new AuthenticationImage(81, getAnimalImageLink(81), false),
+        new AuthenticationImage(83, getAnimalImageLink(83), false),
+        new AuthenticationImage(13, getAnimalImageLink(13), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(60, getAnimalImageLink(60), false),
+        new AuthenticationImage(46, getAnimalImageLink(46), false),
+        new AuthenticationImage(52, getAnimalImageLink(52), false)],
+        
+    4: [new AuthenticationImage(58, getAnimalImageLink(58), true),
+        new AuthenticationImage(10, getAnimalImageLink(10), false),
+        new AuthenticationImage(93, getAnimalImageLink(93), false),
+        new AuthenticationImage(66, getAnimalImageLink(66), false),
+        new AuthenticationImage(30, getAnimalImageLink(30), false),
+        new AuthenticationImage(90, getAnimalImageLink(90), false),
+        new AuthenticationImage(0, getAnimalImageLink(0), false),
+        new AuthenticationImage(51, getAnimalImageLink(51), false),
+        new AuthenticationImage(83, getAnimalImageLink(83), false),
+        new AuthenticationImage(77, getAnimalImageLink(77), false)],
+}
+
+const USER1AssociationDict={
+    0: [new AuthenticationImage(85, getAnimalImageLink(85), true),
+        new AuthenticationImage(96, getAnimalImageLink(96), false),
+        new AuthenticationImage(39, getAnimalImageLink(39), false),
+        new AuthenticationImage(27, getAnimalImageLink(27), false),
+        new AuthenticationImage(29, getAnimalImageLink(29), false),
+        new AuthenticationImage(56, getAnimalImageLink(56), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(50, getAnimalImageLink(50), false),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(71, getAnimalImageLink(71), false)],
+        
+    1: [new AuthenticationImage(99, getAnimalImageLink(99), true),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(100, getAnimalImageLink(100), false),
+        new AuthenticationImage(16, getAnimalImageLink(16), false),
+        new AuthenticationImage(13, getAnimalImageLink(13), false),
+        new AuthenticationImage(53, getAnimalImageLink(53), false),
+        new AuthenticationImage(45, getAnimalImageLink(45), false),
+        new AuthenticationImage(15, getAnimalImageLink(15), false),
+        new AuthenticationImage(44, getAnimalImageLink(44), false),
+        new AuthenticationImage(8, getAnimalImageLink(8), false)],
+        
+    2: [new AuthenticationImage(63, getAnimalImageLink(63), true),
+        new AuthenticationImage(1, getAnimalImageLink(1), false),
+        new AuthenticationImage(30, getAnimalImageLink(30), false),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(84, getAnimalImageLink(84), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(12, getAnimalImageLink(12), false),
+        new AuthenticationImage(86, getAnimalImageLink(86), false),
+        new AuthenticationImage(37, getAnimalImageLink(37), false),
+        new AuthenticationImage(21, getAnimalImageLink(21), false)],
+        
+    3: [new AuthenticationImage(23, getAnimalImageLink(23), true),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(31, getAnimalImageLink(31), false),
+        new AuthenticationImage(98, getAnimalImageLink(98), false),
+        new AuthenticationImage(92, getAnimalImageLink(92), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(34, getAnimalImageLink(34), false),
+        new AuthenticationImage(36, getAnimalImageLink(36), false),
+        new AuthenticationImage(7, getAnimalImageLink(7), false),
+        new AuthenticationImage(74, getAnimalImageLink(74), false)],
+        
+    4: [new AuthenticationImage(57, getAnimalImageLink(57), true),
+        new AuthenticationImage(22, getAnimalImageLink(22), false),
+        new AuthenticationImage(94, getAnimalImageLink(94), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(61, getAnimalImageLink(61), false),
+        new AuthenticationImage(52, getAnimalImageLink(52), false),
+        new AuthenticationImage(76, getAnimalImageLink(76), false),
+        new AuthenticationImage(101, getAnimalImageLink(101), false),
+        new AuthenticationImage(60, getAnimalImageLink(60), false),
+        new AuthenticationImage(40, getAnimalImageLink(40), false)]
+}
+
+const USER2AssociationDict={
+    0: [new AuthenticationImage(9, getAnimalImageLink(9), true),
+        new AuthenticationImage(96, getAnimalImageLink(96), false),
+        new AuthenticationImage(39, getAnimalImageLink(39), false),
+        new AuthenticationImage(27, getAnimalImageLink(27), false),
+        new AuthenticationImage(29, getAnimalImageLink(29), false),
+        new AuthenticationImage(56, getAnimalImageLink(56), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(50, getAnimalImageLink(50), false),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(71, getAnimalImageLink(71), false)],
+        
+    1: [new AuthenticationImage(25, getAnimalImageLink(25), true),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(100, getAnimalImageLink(100), false),
+        new AuthenticationImage(16, getAnimalImageLink(16), false),
+        new AuthenticationImage(13, getAnimalImageLink(13), false),
+        new AuthenticationImage(53, getAnimalImageLink(53), false),
+        new AuthenticationImage(45, getAnimalImageLink(45), false),
+        new AuthenticationImage(15, getAnimalImageLink(15), false),
+        new AuthenticationImage(44, getAnimalImageLink(44), false),
+        new AuthenticationImage(8, getAnimalImageLink(8), false)],
+        
+    2: [new AuthenticationImage(16, getAnimalImageLink(16), true),
+        new AuthenticationImage(1, getAnimalImageLink(1), false),
+        new AuthenticationImage(30, getAnimalImageLink(30), false),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(84, getAnimalImageLink(84), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(12, getAnimalImageLink(12), false),
+        new AuthenticationImage(86, getAnimalImageLink(86), false),
+        new AuthenticationImage(37, getAnimalImageLink(37), false),
+        new AuthenticationImage(21, getAnimalImageLink(21), false)],
+        
+    3: [new AuthenticationImage(84, getAnimalImageLink(84), true),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(31, getAnimalImageLink(31), false),
+        new AuthenticationImage(98, getAnimalImageLink(98), false),
+        new AuthenticationImage(92, getAnimalImageLink(92), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(34, getAnimalImageLink(34), false),
+        new AuthenticationImage(36, getAnimalImageLink(36), false),
+        new AuthenticationImage(7, getAnimalImageLink(7), false),
+        new AuthenticationImage(74, getAnimalImageLink(74), false)],
+        
+    4: [new AuthenticationImage(83, getAnimalImageLink(83), true),
+        new AuthenticationImage(22, getAnimalImageLink(22), false),
+        new AuthenticationImage(94, getAnimalImageLink(94), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(61, getAnimalImageLink(61), false),
+        new AuthenticationImage(52, getAnimalImageLink(52), false),
+        new AuthenticationImage(76, getAnimalImageLink(76), false),
+        new AuthenticationImage(101, getAnimalImageLink(101), false),
+        new AuthenticationImage(60, getAnimalImageLink(60), false),
+        new AuthenticationImage(40, getAnimalImageLink(40), false)]
+}
+
+const USER3AssociationDict={
+    0: [new AuthenticationImage(58, getAnimalImageLink(58), true),
+        new AuthenticationImage(96, getAnimalImageLink(96), false),
+        new AuthenticationImage(39, getAnimalImageLink(39), false),
+        new AuthenticationImage(27, getAnimalImageLink(27), false),
+        new AuthenticationImage(29, getAnimalImageLink(29), false),
+        new AuthenticationImage(56, getAnimalImageLink(56), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(50, getAnimalImageLink(50), false),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(71, getAnimalImageLink(71), false)],
+        
+    1: [new AuthenticationImage(72, getAnimalImageLink(72), true),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(100, getAnimalImageLink(100), false),
+        new AuthenticationImage(16, getAnimalImageLink(16), false),
+        new AuthenticationImage(13, getAnimalImageLink(13), false),
+        new AuthenticationImage(53, getAnimalImageLink(53), false),
+        new AuthenticationImage(45, getAnimalImageLink(45), false),
+        new AuthenticationImage(15, getAnimalImageLink(15), false),
+        new AuthenticationImage(44, getAnimalImageLink(44), false),
+        new AuthenticationImage(8, getAnimalImageLink(8), false)],
+        
+    2: [new AuthenticationImage(67, getAnimalImageLink(67), true),
+        new AuthenticationImage(1, getAnimalImageLink(1), false),
+        new AuthenticationImage(30, getAnimalImageLink(30), false),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(84, getAnimalImageLink(84), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(12, getAnimalImageLink(12), false),
+        new AuthenticationImage(86, getAnimalImageLink(86), false),
+        new AuthenticationImage(37, getAnimalImageLink(37), false),
+        new AuthenticationImage(21, getAnimalImageLink(21), false)],
+        
+    3: [new AuthenticationImage(56, getAnimalImageLink(56), true),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(31, getAnimalImageLink(31), false),
+        new AuthenticationImage(98, getAnimalImageLink(98), false),
+        new AuthenticationImage(92, getAnimalImageLink(92), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(34, getAnimalImageLink(34), false),
+        new AuthenticationImage(36, getAnimalImageLink(36), false),
+        new AuthenticationImage(7, getAnimalImageLink(7), false),
+        new AuthenticationImage(74, getAnimalImageLink(74), false)],
+        
+    4: [new AuthenticationImage(27, getAnimalImageLink(27), true),
+        new AuthenticationImage(22, getAnimalImageLink(22), false),
+        new AuthenticationImage(94, getAnimalImageLink(94), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(61, getAnimalImageLink(61), false),
+        new AuthenticationImage(52, getAnimalImageLink(52), false),
+        new AuthenticationImage(76, getAnimalImageLink(76), false),
+        new AuthenticationImage(101, getAnimalImageLink(101), false),
+        new AuthenticationImage(60, getAnimalImageLink(60), false),
+        new AuthenticationImage(40, getAnimalImageLink(40), false)]
+}
+
+const USER4AssociationDict={
+    0: [new AuthenticationImage(25, getAnimalImageLink(25), true),
+        new AuthenticationImage(96, getAnimalImageLink(96), false),
+        new AuthenticationImage(39, getAnimalImageLink(39), false),
+        new AuthenticationImage(27, getAnimalImageLink(27), false),
+        new AuthenticationImage(29, getAnimalImageLink(29), false),
+        new AuthenticationImage(56, getAnimalImageLink(56), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(50, getAnimalImageLink(50), false),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(71, getAnimalImageLink(71), false)],
+        
+    1: [new AuthenticationImage(50, getAnimalImageLink(50), true),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(100, getAnimalImageLink(100), false),
+        new AuthenticationImage(16, getAnimalImageLink(16), false),
+        new AuthenticationImage(13, getAnimalImageLink(13), false),
+        new AuthenticationImage(53, getAnimalImageLink(53), false),
+        new AuthenticationImage(45, getAnimalImageLink(45), false),
+        new AuthenticationImage(15, getAnimalImageLink(15), false),
+        new AuthenticationImage(44, getAnimalImageLink(44), false),
+        new AuthenticationImage(8, getAnimalImageLink(8), false)],
+        
+    2: [new AuthenticationImage(14, getAnimalImageLink(14), true),
+        new AuthenticationImage(1, getAnimalImageLink(1), false),
+        new AuthenticationImage(30, getAnimalImageLink(30), false),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(84, getAnimalImageLink(84), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(12, getAnimalImageLink(12), false),
+        new AuthenticationImage(86, getAnimalImageLink(86), false),
+        new AuthenticationImage(37, getAnimalImageLink(37), false),
+        new AuthenticationImage(21, getAnimalImageLink(21), false)],
+        
+    3: [new AuthenticationImage(18, getAnimalImageLink(18), true),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(31, getAnimalImageLink(31), false),
+        new AuthenticationImage(98, getAnimalImageLink(98), false),
+        new AuthenticationImage(92, getAnimalImageLink(92), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(34, getAnimalImageLink(34), false),
+        new AuthenticationImage(36, getAnimalImageLink(36), false),
+        new AuthenticationImage(7, getAnimalImageLink(7), false),
+        new AuthenticationImage(74, getAnimalImageLink(74), false)],
+        
+    4: [new AuthenticationImage(37, getAnimalImageLink(37), true),
+        new AuthenticationImage(22, getAnimalImageLink(22), false),
+        new AuthenticationImage(94, getAnimalImageLink(94), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(61, getAnimalImageLink(61), false),
+        new AuthenticationImage(52, getAnimalImageLink(52), false),
+        new AuthenticationImage(76, getAnimalImageLink(76), false),
+        new AuthenticationImage(101, getAnimalImageLink(101), false),
+        new AuthenticationImage(60, getAnimalImageLink(60), false),
+        new AuthenticationImage(40, getAnimalImageLink(40), false)]
+}
+
+const USER5AssociationDict={
+    0: [new AuthenticationImage(4, getAnimalImageLink(4), true),
+        new AuthenticationImage(96, getAnimalImageLink(96), false),
+        new AuthenticationImage(39, getAnimalImageLink(39), false),
+        new AuthenticationImage(27, getAnimalImageLink(27), false),
+        new AuthenticationImage(29, getAnimalImageLink(29), false),
+        new AuthenticationImage(56, getAnimalImageLink(56), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(50, getAnimalImageLink(50), false),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(71, getAnimalImageLink(71), false)],
+        
+    1: [new AuthenticationImage(4, getAnimalImageLink(4), true),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(100, getAnimalImageLink(100), false),
+        new AuthenticationImage(16, getAnimalImageLink(16), false),
+        new AuthenticationImage(13, getAnimalImageLink(13), false),
+        new AuthenticationImage(53, getAnimalImageLink(53), false),
+        new AuthenticationImage(45, getAnimalImageLink(45), false),
+        new AuthenticationImage(15, getAnimalImageLink(15), false),
+        new AuthenticationImage(44, getAnimalImageLink(44), false),
+        new AuthenticationImage(8, getAnimalImageLink(8), false)],
+        
+    2: [new AuthenticationImage(4, getAnimalImageLink(4), true),
+        new AuthenticationImage(1, getAnimalImageLink(1), false),
+        new AuthenticationImage(30, getAnimalImageLink(30), false),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(84, getAnimalImageLink(84), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(12, getAnimalImageLink(12), false),
+        new AuthenticationImage(86, getAnimalImageLink(86), false),
+        new AuthenticationImage(37, getAnimalImageLink(37), false),
+        new AuthenticationImage(21, getAnimalImageLink(21), false)],
+        
+    3: [new AuthenticationImage(4, getAnimalImageLink(4), true),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(31, getAnimalImageLink(31), false),
+        new AuthenticationImage(98, getAnimalImageLink(98), false),
+        new AuthenticationImage(92, getAnimalImageLink(92), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(34, getAnimalImageLink(34), false),
+        new AuthenticationImage(36, getAnimalImageLink(36), false),
+        new AuthenticationImage(7, getAnimalImageLink(7), false),
+        new AuthenticationImage(74, getAnimalImageLink(74), false)],
+        
+    4: [new AuthenticationImage(4, getAnimalImageLink(4), true),
+        new AuthenticationImage(22, getAnimalImageLink(22), false),
+        new AuthenticationImage(94, getAnimalImageLink(94), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(61, getAnimalImageLink(61), false),
+        new AuthenticationImage(52, getAnimalImageLink(52), false),
+        new AuthenticationImage(76, getAnimalImageLink(76), false),
+        new AuthenticationImage(101, getAnimalImageLink(101), false),
+        new AuthenticationImage(60, getAnimalImageLink(60), false),
+        new AuthenticationImage(40, getAnimalImageLink(40), false)]
+}
+
+
+
+
+var VERSIONS = ["Distorted", "Undistorted"]; 
+var VERSION_COLORS = ["yellow", "rgb(135, 233, 17)"]; 
+var DISTORT_FACES = false;
+var VERSION = 1;
+const TIMER_IN_SECONDS = 60;
+const SESSION = 1;
+
+var currentFaceImages = [];
+var clickedFaceImages = [];
+
+var animalImagesShown = [];
+var clickedAnimalImage = "";
+
+var currFaceButtonID = 0;
+var currAnimalButtonID = 0;
+
+var previouslyClickedAnimalButtonName = "";
+var previouslyClickedFaceButtonName = "";
+
+var deselectedFaces = [];
+var deselectedAnimals = [];
+
+var numTimesAnimalsDeselected = 0;
+var numTimesFacesDeselected = 0;
+
+var clearedAnimals = [];
+var clearedFaces = [];
+var previousAttemptsFinished = 0;
+
+var PRACTICE_MODE = true;
+
+var USER1 = new User(1, 5, 22);
+USER1.associationDict = USER1AssociationDict;
+//USER1.userArray = USER1_USER_PHOTOS;
+//USER1.chaffArray = USER1_CHAFF;
+
+var USER0 = new User(0, 5, 22);
+USER0.associationDict = USER0AssociationDict;
+
+var USER2 = new User(2, 5, 22);
+USER2.associationDict = USER2AssociationDict;
+
+var USER3 = new User(3, 5, 22);
+USER3.associationDict = USER3AssociationDict;
+
+var USER4 = new User(4, 5, 22);
+USER4.associationDict = USER4AssociationDict;
+
+var USER5 = new User(5, 5, 22);
+USER5.associationDict = USER5AssociationDict;
+
+
+
+USERS = [USER0, USER1, USER2, USER3, USER4, USER5];
+
+var CURRENT_USER = USER0;
+
+numAttempts = -1; //Negative numbers for example attempts, positive numbers for other attempts
+clearButtonClicked = 0;
+pageIndex = 0;
+
+var metrics = {
+    "version":0,
+    "TimeElapsed":{}, 
+    "FacesShown":{}, 
+    "FacesSelected":{},
+    "FacesDeselected":{},
+    "AnimalsShown":{},
+    "AnimalSelected":{},
+    "AnimalDeselected":{},
+    "Attempts":{},
+    "AttemptAccuracyFaces":{},
+    "AnimalAccurate":{},
+    "clearButtonClicks" : {},
+    "animalsCleared" : {},
+    "facesCleared": {},
+    "Browser":{},
+    "ScreenSize":{},
+    "userId":""
+} //Temporary way to store metrics to make sure we are getting the correct ones until we decide where to write them too
+
+
+function startTimer(duration, btnId, divIdOfText,divIdOfGame, continueText, nextButtonDiv) {
+    document.getElementById(btnId).value="00 :" + duration;
+    //display.textContent =  "00 :" + duration;
+    var timer = duration, minutes, seconds;
+    timerInterval =setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+        
+        if(minutes>0 || seconds>0){
+            //display.textContent = minutes + ":" + seconds;
+            document.getElementById(btnId).value=minutes + ":" + seconds;
+        }else{
+            //display.textContent ="Next";
+            document.getElementById(btnId).value="Next";
+            if (timer === 0) {
+                document.getElementById(btnId).style.display = "none";
+                document.getElementById(btnId).style.backgroundColor = "black";
+                //hide the game and display the text 
+                document.getElementById(divIdOfGame).style.display = "none";
+                document.getElementById(divIdOfText).style.display = "none";
+                document.getElementById(nextButtonDiv).style.display = "block";
+                document.getElementById(continueText).style.display = "block";
+                clearInterval(timerInterval);
+            }
+        }
+
+        if (--timer < 0) {
+            timer = duration;
+        }
+       
+    }, 1000);
+}
+
+function assignVersionRandomly(){
+    var versionIndex = getRandomInt(VERSIONS.length);
+    assignVersion(versionIndex);
+}
+
+function assignVersion(index){
+    VERSION = index;
+    metrics["version"] = index;
+    changeColor(VERSION_COLORS[index]);
+    if (VERSIONS[VERSION] == "Distorted"){
+        DISTORT_FACES = true;
+    }  
+}
+assignVersion(1);
+
+function changeColor(color){
+    document.getElementById("mturk_form").style.borderColor = color;
+    
+    var buttons = document.getElementsByClassName("my-button");
+    for (var i = 0; i < buttons.length; i ++){
+        buttons[i].style.borderColor = color;
+        buttons[i].style.color = color;
+    }
+
+    var disabledButtons = document.getElementsByClassName("my-button-disabled");
+    for (var i = 0; i < disabledButtons.length; i ++){
+        disabledButtons[i].style.borderColor = color;
+        disabledButtons[i].style.color = color;
+    }
+
+    var tabs = document.getElementsByClassName("tab");
+    for (var i = 0; i < tabs.length; i ++){
+        tabs[i].style.color = color;
+    }
+    
+    var paragraph = document.getElementsByClassName("p");
+    for (var i = 0; i < paragraph.length; i ++){
+        paragraph[i].style.color = color;
+    }
+
+    var modal = document.getElementsByClassName("modal-content");
+    for (var i = 0; i < modal.length; i ++){
+        modal[i].style.borderColor = color;
+    }
+    
+    var closeButton = document.getElementsByClassName("close-button");
+    for (var i = 0; i < closeButton.length; i ++){
+        closeButton[i].style.borderColor = color;
+        closeButton[i].style.color = color;
+    }
+    
+    var timers = document.getElementsByClassName("timer");
+    for (var i = 0; i < timers.length; i ++){
+        timers[i].style.borderColor = color;
+        timers[i].style.color = color;
+    }
+    
+    var survey_container = document.getElementsByClassName("survey-container");
+    for (var i = 0; i < survey_container.length; i ++){
+        survey_container[i].style.borderColor = color;
+    }
+    
+}
+ 
+function incrementMetric(metric, img){
+    metric.push(img);
+} 
+
+function gridItemClickMultiple(btnName, clickedImages, currentImg, deselectionMetric){
+    var element = document.getElementById(btnName);
+    element.classList.toggle("grid-button-selected" + VERSION);
+    
+    if (clickedImages.includes(currentImg)){
+        var facePosition = clickedImages.indexOf(currentImg);
+        if (facePosition !== -1){
+            clickedImages.splice(facePosition, 1);
+            incrementMetric(deselectionMetric, currentImg);
+        }
+    }
+    else {
+        clickedImages.push(currentImg);
+    }
+    return clickedImages;
+}
+
+function gridItemClickSingle(btnName, clickedImage, currentImg, previousButton, deselectionMetric){
+    var element = document.getElementById(btnName);
+    element.classList.toggle("grid-button-selected" + VERSION);
+    if (btnName == previousButton){
+        var element = document.getElementById(previousButton);
+        element.classList.remove("grid-button-selected" + VERSION);
+        incrementMetric(deselectionMetric, clickedImage);
+        
+        previousButton = "";
+        clickedImage = "";
+    }
+    else{
+        if (previousButton != ""){
+            var element = document.getElementById(previousButton);
+            incrementMetric(deselectionMetric, clickedImage);
+            element.classList.remove("grid-button-selected" + VERSION);
+        }
+        clickedImage = currentImg;
+        previousButton = btnName;
+    }
+    return [previousButton, clickedImage]; 
+}
+
+function facegridItemClick(btnName, index, tab, faceImg){
+    clickedFaceImages = gridItemClickMultiple(btnName, clickedFaceImages, faceImg, deselectedFaces);
+}
+
+function animalGridItemClick(btnName, index,tab, animalImg){
+    var clickReturns = gridItemClickSingle(btnName, clickedAnimalImage, animalImg, previouslyClickedAnimalButtonName, deselectedAnimals);
+    previouslyClickedAnimalButtonName = clickReturns[0];
+    clickedAnimalImage = clickReturns[1];
+    console.log(clickedAnimalImage.correct);
+}
+
+function addFaceButtonsToPage(imgList, containerName, tab){
+    var g;
+    console.log(imgList);
+    
+    for (g=0; g<imgList.length; g++) {
+        var btnId="faceBtn"+currFaceButtonID;
+        currFaceButtonID ++;
+        var grid_item = containerName + g;
+
+        var currImg = imgList[g];
+        currentFaceImages.push(currImg);
+
+        var button = document.createElement('div');
+        button.className = "grid-button" + VERSION;
+        button.id=btnId;
+        button.onclick = (function (btnId,index,tab,faceImg) {
+            return function () {
+                facegridItemClick(btnId,index,tab,faceImg);
+            };
+        })(btnId,g,tab,currImg);
+
+
+        var img = document.createElement('img');
+        img.className = "grid-img";
+        img.src = imgList[g].location;
+        button.appendChild(img);
+        document.getElementById(grid_item).appendChild(button);
+    }
+}
+
+function createFacePage(containerName, tab){
+    imgList = getFaceImages(CURRENT_USER, DISTORT_FACES);
+    
+    currentFaceImages = [];
+    clickedFaceImages = [];
+    
+    addFaceButtonsToPage(imgList, containerName, tab);
+}
+
+function addAnimalButtonsToPage(animalList, containerName, tab){
+    var  a;
+    for (a=0; a<animalList.length; a++) {
+        var btnId="animalBtn"+currAnimalButtonID;
+        currAnimalButtonID ++;
+        
+        var grid_item = containerName + a;
+
+        var button = document.createElement('div');
+        button.className = "grid-button" + VERSION;
+        button.id=btnId;
+        button.onclick = (function (btnId,index,tab, animalImg) {
+            return function () {
+                animalGridItemClick(btnId,index,tab, animalImg);
+            };
+        })(btnId,a,tab,animalList[a]);
+
+
+        var img = document.createElement('img');
+        img.className = "grid-animal-img";
+        img.src = animalList[a].location;
+        button.appendChild(img);
+        document.getElementById(grid_item).appendChild(button);
+    }
+    animalImagesShown = animalList;
+}
+
+function createAnimalPage(faceImgElement, containerName, tab){
+    clickedAnimalImage = "";
+    previouslyClickedAnimalButtonName = ""
+
+    var chosenFace = clickedFaceImages[getRandomInt(clickedFaceImages.length)];
+
+    document.getElementById(faceImgElement).src = chosenFace.location;
+
+    animalImgs = getAnimalImages(CURRENT_USER, chosenFace);
+    addAnimalButtonsToPage(animalImgs, containerName, tab);
+}
+
+function validateLoginAttempt(){
+    var loginCorrect = validateAllImagesInList(clickedFaceImages, currentFaceImages);
+    
+    if (clickedAnimalImage){
+        loginCorrect = loginCorrect && clickedAnimalImage.correct;
+    }
+    else{
+        loginCorrect = false;
+    }
+    return loginCorrect;
+}
+
+function validateAllImagesInList(clickedImgList, totalImgList){
+    var correct = true;
+    if (clickedImgList.length > 0 && totalImgList.length > 0){
+        for (var i = 0; i < clickedImgList.length; i ++){
+            //make sure everything in the imgList is correct
+            correct = correct && clickedImgList[i].correct;
+        }
+        for (var j = 0; j < totalImgList.length; j ++){
+            //make sure that none of the correct faces are missing from imgList
+            if (!clickedImgList.includes(totalImgList[j])){
+                correct = correct && !totalImgList[j].correct;
+            }
+        }
+    }
+    else{
+        correct = false;
+    }
+    return correct;
+}
+
+function calculateAttemptAccuracy(){
+    //(# of Targets Clicked) / (Total # of Targets + # of Distractors clicked) 
+    var targetsClicked = 0;
+    var distractorsClicked = 0;
+    for (var n=0; n < clickedFaceImages.length; n++){
+        if (clickedFaceImages[n].correct){
+            targetsClicked ++;
+        }
+        else{
+            distractorsClicked ++;
+        }
+    }
+    var totalTargets = 0;
+    for (var n=0; n < currentFaceImages.length; n ++){
+        if (currentFaceImages[n].correct){
+            totalTargets ++;
+        }
+    }
+    return targetsClicked / (totalTargets + distractorsClicked);
+}
+
+function UpdateValidationScreen(validation, statusMessageID, statusImageID, loginTriesID, continueTextID){
+    if (!validation){
+        document.getElementById(statusMessageID).innerHTML = "Login not successful";
+        //Add number of tries remaining?
+        document.getElementById(statusImageID).src = LOGIN_FAILED;
+        if (pageIndex <2){
+            document.getElementById(loginTriesID).innerHTML = "You have " + (2-pageIndex) + " out of 3 attempts remaining";
+        }
+        else{
+            document.getElementById(loginTriesID).innerHTML = "You have no attempts remaining for this login.";
+            document.getElementById(continueTextID).style.display = "block";
+        }
+    }
+    else {
+        document.getElementById(statusMessageID).innerHTML = "Login successful!";
+        document.getElementById(statusImageID).src = "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png";
+        document.getElementById(loginTriesID).style.display = "None";
+        document.getElementById(continueTextID).style.display = "block";
+
+    }
+}
+
+function UpdateValidationScreenExample(validation){
+    if (!validation){
+        document.getElementById('login-statusEx').innerHTML = "Login not successful";
+        document.getElementById('status-imageEx').src = LOGIN_FAILED;
+        document.getElementById("nextBtnToLogin").innerHTML = "Try Again"
+        
+        if (pageIndex < 2){
+            document.getElementById("loginExText1").innerHTML = "Please try logging in again";
+            document.getElementById("loginExText2").innerHTML = "You have " + (2-pageIndex) + " attempts remaining";
+        }
+        else{
+            document.getElementById("loginExText1").innerHTML = "You have no login attempts remaining";
+            document.getElementById("loginExText2").innerHTML = "You can still continue practicing as long as you would like";
+            document.getElementById("nextBtnToLogin").innerHTML = "Continue Practicing"
+        }
+    }
+    else{
+        document.getElementById('login-statusEx').innerHTML = "Login successful!";
+        document.getElementById('status-imageEx').src = "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png";
+        document.getElementById("loginExText1").innerHTML = "";
+        document.getElementById("loginExText2").innerHTML = "You can still continue practicing as long as you would like";
+        document.getElementById("nextBtnToLogin").innerHTML= "Continue Practicing"
+    }
+    
+}
+
+function playVideo(nextButtonDiv, videoHeading, videoDiv, youtubeVideoID){
+    document.getElementById(nextButtonDiv).style.display = "none";
+    // This code loads the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    var player;
+    player =new YT.Player(videoDiv, {
+        height: '80%',
+        width: '100%',
+        videoId: youtubeVideoID,
+        playerVars: { 'autoplay': 1, 'mute':1, 'controls': 0, 'disablekb': 1, "modestbranding":1, "rel":0},
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+    });
+
+    // hide next button
+    function onPlayerReady(event) {
+        // document.getElementById("divVideoEx").style.display = "none";
+
+        // For debugging
+        //document.getElementById(nextButtonDiv).style.display = "block";
+    }
+    // when video ends
+    function onPlayerStateChange(event) {        
+        if(event.data === 0) {   
+            //document.getElementById(videoDiv).style.visibility = "hidden";
+            player.destroy();
+            document.getElementById(videoHeading).innerHTML = "Please press the Next button to continue to the game";
+            document.getElementById(nextButtonDiv).style.display = "block";
+        }
+    }
+}
+
+function playIntroVideo(nextButtonDiv, videoDiv, youtubeVideoID){
+    // This code loads the IFrame Player API code asynchronously.
+    //if (numTimesViewingInstructions == 1){
+    //    document.getElementById(nextButtonDiv).style.display = "none";
+    //}
+    document.getElementById(videoDiv).innerHTML = ""
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    var player;
+    player = new YT.Player(videoDiv, {
+        height: '70%',
+        width: '100%',
+        videoId: youtubeVideoID,
+        playerVars: {"modestbranding":1, "rel":0, "cc_load_policy":1},
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+    });
+
+    // hide next button
+    function onPlayerReady(event) {
+        //for debug only
+        document.getElementById(nextButtonDiv).style.display = "block";
+    }
+    // when video ends
+    function onPlayerStateChange(event) {        
+        if(event.data === 0) { 
+            player.destroy();
+            document.getElementById(nextButtonDiv).style.display = "block";
+        }
+    }
+}
+    
+function updateMetricsOnValidation(validation){
+    console.log("updating metrics");
+    console.log(numAttempts);
+    console.log(pageIndex);
+    attempts = metrics["Attempts"]
+    faceMetrics = metrics["FacesSelected"];
+    selectedAnimals = metrics["AnimalSelected"];
+    animalCorrect = metrics["AnimalAccurate"];
+    animalShown = metrics["AnimalsShown"];
+    faceShown = metrics["FacesShown"];
+    clearButton = metrics["clearButtonClicks"];
+    deselectedAnimalMetric = metrics["AnimalDeselected"];
+    deselectedFaceMetric = metrics["FacesDeselected"];
+    clearedFaceMetric = metrics["facesCleared"];
+    clearedAnimalMetric = metrics["animalsCleared"];
+    accuracyMetric = metrics["AttemptAccuracyFaces"];
+    
+    if (pageIndex == 0 || pageIndex == 1){
+        attempts[numAttempts] = {};
+        faceMetrics[numAttempts] = {};
+        selectedAnimals[numAttempts] = {};
+        animalCorrect[numAttempts] = {};
+        animalShown[numAttempts] = {};
+        faceShown[numAttempts] = {};
+        clearButton[numAttempts] = {};
+        deselectedAnimalMetric[numAttempts] = {};
+        deselectedFaceMetric[numAttempts] = {};
+        clearedFaceMetric[numAttempts] = {};
+        clearedAnimalMetric[numAttempts] = {};
+        accuracyMetric[numAttempts] = {};
+    }
+    
+    attemptMetric = attempts[numAttempts];
+    attemptMetric[pageIndex] = validation;
+
+    currFace = faceMetrics[numAttempts];
+    currFace[pageIndex] = clickedFaceImages;
+    
+    selectedAnimalsMetric = selectedAnimals[numAttempts];
+    selectedAnimalsMetric[pageIndex] = clickedAnimalImage;
+    
+    animalCorrectMetric = animalCorrect[numAttempts];
+    animalCorrectMetric[pageIndex] = clickedAnimalImage.correct;
+    
+    animalShownMetric = animalShown[numAttempts];
+    animalShownMetric[pageIndex] = animalList;
+    
+    faceShownMetric = faceShown[numAttempts];
+    faceShownMetric[pageIndex] = currentFaceImages;
+    
+    clearButtonMetric = clearButton[numAttempts];
+    clearButtonMetric[pageIndex] = clearButtonClicked;
+    clearButtonClicked = 0;
+    
+    currDeselectedAnimalMetric = deselectedAnimalMetric[numAttempts];
+    currDeselectedAnimalMetric[pageIndex] = deselectedAnimals;
+    deselectedAnimals = [];
+    
+    currDeselectedFaceMetric = deselectedFaceMetric[numAttempts];
+    currDeselectedFaceMetric[pageIndex] = deselectedFaces;
+    deselectedFaces = [];
+    
+    currClearedFaceMetric = clearedFaceMetric[numAttempts];
+    currClearedFaceMetric[pageIndex] = clearedFaces;
+    clearedFaces = [];
+    
+    currClearedAnimalMetric = clearedAnimalMetric[numAttempts];
+    currClearedAnimalMetric[pageIndex] = clearedAnimals;
+    clearedAnimals = [];
+    
+    currAccuracyMetric = accuracyMetric[numAttempts];
+
+    if (validation){
+        currAccuracyMetric[pageIndex] = 1;
+    }
+    else{
+        currAccuracyMetric[pageIndex] = calculateAttemptAccuracy();
+    }
+    previouslyClickedAnimalButtonName = "";
+    pageIndex ++;
+    
+    if (validation || pageIndex >=3){
+        previousAttemptsFinished ++;
+        pageIndex = 0;
+        
+    }
+
+    //numAttempts ++;
+    
+}
+
+function showModal(modalName){
+    var modal = document.getElementById(modalName);
+    modal.classList.toggle("show-modal");
+}
+
+function showDisplayFaces(user, imgId){
+    faces = getDisplayFaces(user);
+    
+    for (var i = 0; i < faces.length; i ++){
+        imgLoc = document.getElementById(imgId + i);
+        imgLoc.src = faces[i].location
+    }
+}
+
+var currentTab = 0; // Current tab is set to be the first tab (0)
+showTab(currentTab); // Display the current tab
+var start =  Date.now();
+
+function showTab(n) {
+    // This function will display the specified tab of the form...
+    var x = document.getElementsByClassName("tab");
+    x[n].style.display = "block";
+}
+
+function sendEmail(){
+Email.send({
+    SecureToken : "348f6e8c-0bea-4428-a1d2-293fe118e4cf",
+    To : 'asset.uri@gmail.com',
+    From : 'bflewis@uri.edu',
+    Subject : "User " + CURRENT_USER.id + " Session " + SESSION + " study data",
+    Body : metrics
+});
+console.log("sent?");
+}
+
+
+var VIDEOS = {0:['pP4iSNb3ulM'], 1:['BHpOejzLuNw']}
+
+function getVideoID(index){
+    videoList = VIDEOS[VERSION];
+    return videoList[index];
+}
+
+var TABS=[
+    "CHECK_ID",
+    "TRY_AGAIN",
+    "ASK_PRACTICE",
+    "FACE_EX",
+    "ANIMAL_EX",
+    "STATUS_EX",
+    "FACE_1",
+    "ANIMAL_1",
+    "STATUS_1",
+    "FACE_2",
+    "ANIMAL_2",
+    "STATUS_2",
+    "FACE_3",
+    "ANIMAL_3",
+    "STATUS_3",
+    "FACE_4",
+    "ANIMAL_4",
+    "STATUS_4",
+    "FACE_5",
+    "ANIMAL_5",
+    "STATUS_5",
+    "FINISH"];
+
+function getTabName(currentTabNumber){
+    return TABS[currentTabNumber];
+}
+
+function moveToTab(tabToMoveTo){
+    currTabNum = currentTab+1;
+    tabToMoveToNum = TABS.indexOf(tabToMoveTo);
+    
+    var x = document.getElementsByClassName("tab");
+    x[currentTab].style.display = "none";
+    
+    if(currTabNum < tabToMoveToNum){
+        for(var i=currTabNum; i < tabToMoveToNum; i++){
+            x[i].style.display = "none";
+        }
+        currentTab += (tabToMoveToNum - currTabNum);
+        showTab(currentTab+1);
+        nextPrev(1);
+    }
+    else{
+        currentTab = tabToMoveToNum-1;
+        //showTab(currentTab);
+        nextPrev(1);
+    }
+}
+
+function clearGridImages(containerName, numImages){
+    for (i=0; i<numImages; i++) {
+        grid_item = containerName + i;
+        document.getElementById(grid_item).innerHTML = "";
+    }
+}
+
+function nextPrev(n) {
+    //for test
+    //console.log(metrics);
+    console.log(getTabName(currentTab+1));
+    
+    if(n!=0){
+        var elapsed =( Date.now() - start)/1000;
+        //console.log('Time spent on screen '+ (currentTab+1) +' is '+ elapsed);
+        timeDict = metrics["TimeElapsed"];
+        timeDict[currentTab] = {"time":elapsed,"tabName":getTabName(currentTab)};
+             
+    }
+    start = Date.now();
+    var tabName=getTabName(currentTab+1);
+    switch (tabName) {
+        case "FACE_EX":
+            
+            //Example face page
+            var container = document.getElementById("divLoginGridEx");
+
+            var x = document.getElementsByClassName("tab");
+            x[currentTab].style.display = "none";
+            
+            clearGridImages("gridFaceEx_", 9);
+
+            clickedFaceImages = [];
+            currentFaceImages = [];
+            imgList = getFaceImages(CURRENT_USER, DISTORT_FACES);//getFaceImagesForExample(DISTORT_FACES);
+
+            addFaceButtonsToPage(imgList, "gridFaceEx_", currentTab);
+            
+            break;
+        case "ANIMAL_EX":
+            //Example Animal Page
+            if(clickedFaceImages.length==0){
+                showModal("modalExVideoFace");
+                return false;
+            }
+            var chosenFace = clickedFaceImages[getRandomInt(clickedFaceImages.length)];
+            document.getElementById("screen4FaceImg").src = chosenFace.location;
+            var container = document.getElementById("divAnimalsGridEx");
+            animalImgs = getAnimalImages(CURRENT_USER, chosenFace);
+            
+            clearGridImages("gridAnimalEx_", 10);
+            addAnimalButtonsToPage(animalImgs, "gridAnimalEx_", currentTab);
+            break;
+        case "STATUS_EX":
+            
+            if(!clickedAnimalImage){
+                showModal("modalExVideoAnimal");
+                return false;
+            }
+            else{
+                validation = validateLoginAttempt();
+                UpdateValidationScreenExample(validation);
+                updateMetricsOnValidation(validation);
+            }
+            break;
+        case "FACE_1":
+            //var x = document.getElementsByClassName("tab");
+            //x[currentTab].style.display = "none";
+            if (PRACTICE_MODE){
+                moveToTab("FACE_EX");
+                return;
+            }
+            clearGridImages("gridFace1_", 9);
+            createFacePage("gridFace1_", currentTab);
+            break;
+        case "ANIMAL_1":
+            if(clickedFaceImages.length==0){
+                showModal("modalVideo1Face");
+                return false;
+            }
+            else {
+                clearGridImages("gridAnimal1_", 10);
+                createAnimalPage("screen8FaceImg", "gridAnimal1_", 2);
+            }
+            break;
+        case "STATUS_1":
+            numAttempts = 1;
+
+            if(!clickedAnimalImage){
+                showModal("modalVideo1Animal");
+                return false;
+            }
+            else{
+                validation = validateLoginAttempt();
+                UpdateValidationScreen(validation, 'login-status1', 'status-image1', 'login-tries1', 'continueText1');
+                updateMetricsOnValidation(validation);
+                
+            }
+            
+            break;
+        case "FACE_2":
+            if (previousAttemptsFinished < 1){
+                console.log("WHOOPS!!!");
+                console.log("previousAttemptsFinished");
+                moveToTab("FACE_1");
+                return;
+            }
+            else{
+                clearGridImages("gridFace2_", 9);
+                createFacePage("gridFace2_", currentTab);
+            }
+            break;
+        case "ANIMAL_2":
+            if(clickedFaceImages.length==0){
+                showModal("modalVideo2Face");
+                return false;
+            }
+            else {
+                clearGridImages("gridAnimal2_", 10);
+                createAnimalPage("screen12FaceImg", "gridAnimal2_", currentTab);
+            }
+            break;
+        case "STATUS_2":
+            numAttempts = 2;
+            if(!clickedAnimalImage){
+                showModal("modalVideo2Animal");
+                return false;
+            }
+            else{
+                validation = validateLoginAttempt();
+                UpdateValidationScreen(validation, 'login-status2', 'status-image2', 'login-tries2', 'continueText2');
+                updateMetricsOnValidation(validation);
+            }
+            break;  
+        case "FACE_3":
+            if (previousAttemptsFinished < 2){
+                moveToTab("FACE_2");
+                return;
+            }
+            else{
+                clearGridImages("gridFace3_", 9);
+                createFacePage("gridFace3_", currentTab);
+            }
+            break;
+        case "ANIMAL_3":
+            if(clickedFaceImages.length==0){
+                showModal("modalVideo3Face");
+                return false;
+            }
+            else {
+                clearGridImages("gridAnimal3_", 10);
+                createAnimalPage("screen16FaceImg", "gridAnimal3_", currentTab);
+            }
+            break;
+        case "STATUS_3":
+            numAttempts =3;
+            if(!clickedAnimalImage){
+                showModal("modalVideo3Animal");
+                return false;
+            }
+            else{
+                validation = validateLoginAttempt();
+                UpdateValidationScreen(validation, 'login-status3', 'status-image3', 'login-tries3', 'continueText3');
+                updateMetricsOnValidation(validation);
+            }
+            
+            break;
+        case "FACE_4":
+            if (previousAttemptsFinished < 3){
+                moveToTab("FACE_3");
+                return;
+            }
+            else{
+                clearGridImages("gridFace4_", 9);
+                createFacePage("gridFace4_", currentTab);
+            }
+            break;
+        case "ANIMAL_4":
+            if(clickedFaceImages.length==0){
+                showModal("modalVideo4Face");
+                return false;
+            }
+            else {
+                clearGridImages("gridAnimal4_", 10);
+                createAnimalPage("screen21FaceImg", "gridAnimal4_", currentTab);
+            }
+            break;
+        case "STATUS_4":
+            numAttempts =4;
+            if(!clickedAnimalImage){
+                showModal("modalVideo4Animal");
+                return false;
+            }
+            else{
+                validation = validateLoginAttempt();
+                UpdateValidationScreen(validation, 'login-status4', 'status-image4', 'login-tries4', 'continueText4');
+                updateMetricsOnValidation(validation);
+            }
+            
+            break;
+        case "FACE_5":
+            if (previousAttemptsFinished < 4){
+                moveToTab("FACE_4");
+                return;
+            }
+            else{
+                clearGridImages("gridFace5_", 9);
+                createFacePage("gridFace5_", currentTab);
+            }
+            
+            break;
+        case "ANIMAL_5":
+            if(clickedFaceImages.length==0){
+                showModal("modalVideo5Face");
+                return false;
+            }
+            else {
+                clearGridImages("gridAnimal5_", 10);
+                createAnimalPage("screen26FaceImg", "gridAnimal5_", currentTab);
+            }
+            break;
+        case "STATUS_5":
+            numAttempts =5;
+            if(!clickedAnimalImage){
+                showModal("modalVideo5Animal");
+                return false;
+            }
+            else{
+                validation = validateLoginAttempt();
+                UpdateValidationScreen(validation, 'login-status5', 'status-image5', 'login-tries5', 'continueText5');
+                updateMetricsOnValidation(validation);
+                if (previousAttemptsFinished==5){
+                    metrics["Browser"] = navigator.userAgent;
+                    metrics["ScreenSize"] = "Browser width: " + window.innerWidth + ", height: " + window.innerHeight + ".";
+                    sendEmail();
+                }
+            }
+            
+            break;
+            
+        case "FINISH":
+            if (previousAttemptsFinished < 5){
+                moveToTab("FACE_5");
+                return;
+            }
+            break;
+            //document.getElementById('metrics').value = JSON.stringify(metrics);
+            
+        default:
+            break;
+    }
+    
+
+
+    // This function will figure out which tab to display
+    var x = document.getElementsByClassName("tab");
+
+    // Hide the current tab:
+    x[currentTab].style.display = "none";
+    // Increase or decrease the current tab by 1:
+    currentTab = currentTab + n;
+    // if you have reached the end of the form...
+    if (currentTab >= x.length) {
+        // ... the form gets submitted:
+        document.getElementById("mturk_form").submit();
+        return false;
+    }
+    // Otherwise, display the correct tab:
+    showTab(currentTab);
+}
+
+function submitUserId(){
+    var userID = document.getElementById("userId").value;
+    metrics["userId"] = userID;
+    console.log(userID);
+    
+    if (userID && userID < USERS.length){
+        CURRENT_USER = USERS[userID];
+        console.log(CURRENT_USER);
+        moveToTab("ASK_PRACTICE");
+    }
+    else{
+        moveToTab("TRY_AGAIN");
+    }
+}
+
+function startPracticeMode(){
+    PRACTICE_MODE = true;
+    nextPrev(1);
+    
+}
+
+function startRecordingLogins(){
+    PRACTICE_MODE = false;
+    moveToTab("FACE_1");
+}
+
+function finishPracticing(){
+    pageIndex = 0;
+    PRACTICE_MODE = false;
+    moveToTab("ASK_PRACTICE");
+}
+
+function showExVideoAgain() {
+    // This function will figure out which tab to display
+    //numTimesViewingExample ++;
+    //metrics["numberOfTimesViewingExample"] = numTimesViewingExample;
+
+    if (VERSIONS[VERSION] == "Distorted" || VERSIONS[VERSION] == "Undistorted"){
+        numAttempts -=2;
+        clearButtonClicked -= 2;
+        clearAll("face", 1);
+        clearAll("animal", 1);
+    }
+    var x = document.getElementsByClassName("tab");
+
+    moveToTab("VIDEO_EX");
+    // Hide the current tab:
+    //x[currentTab].style.display = "none";
+    //currentTab = ";
+    
+
+    // Otherwise, display the correct tab:
+    //showTab(currentTab);
+}
+
+function showIntroductionAgain(){
+    //numTimesViewingInstructions ++;
+    moveToTab("INTRODUCTION_VIDEO");
+}
+   
+    
+//close button of modal of example video face screen
+document.getElementById("clsBtnExVideoFace").addEventListener("click", toggleModalExVideoFace);
+function toggleModalExVideoFace() {
+    document.getElementById("modalExVideoFace").classList.toggle("show-modal");
+}
+//close button of modal of example video animal screen
+document.getElementById("clsBtnExVideoAnimal").addEventListener("click", toggleModalExVideoAnimal);
+function toggleModalExVideoAnimal() {
+    document.getElementById("modalExVideoAnimal").classList.toggle("show-modal");
+}
+//close button of modal of  video 1 face screen
+document.getElementById("clsBtnVideo1Face").addEventListener("click", toggleModalVideo1Face);
+function toggleModalVideo1Face() {
+    document.getElementById("modalVideo1Face").classList.toggle("show-modal");
+}
+//close button of modal of  video 1 animal  screen
+document.getElementById("clsBtnVideo1Animal").addEventListener("click", toggleModalVideo1Animal);
+function toggleModalVideo1Animal() {
+    document.getElementById("modalVideo1Animal").classList.toggle("show-modal");
+}
+//close button of modal of  video 2 face screen
+document.getElementById("clsBtnVideo2Face").addEventListener("click", toggleModalVideo2Face);
+function toggleModalVideo2Face() {
+    document.getElementById("modalVideo2Face").classList.toggle("show-modal");
+}
+//close button of modal of  video 2 animal  screen
+document.getElementById("clsBtnVideo2Animal").addEventListener("click", toggleModalVideo2Animal);
+function toggleModalVideo2Animal() {
+    document.getElementById("modalVideo2Animal").classList.toggle("show-modal");
+}
+//close button of modal of  video 3 face screen
+document.getElementById("clsBtnVideo3Face").addEventListener("click", toggleModalVideo3Face);
+function toggleModalVideo3Face() {
+    document.getElementById("modalVideo3Face").classList.toggle("show-modal");
+}
+//close button of modal of  video 3 animal  screen
+document.getElementById("clsBtnVideo3Animal").addEventListener("click", toggleModalVideo3Animal);
+function toggleModalVideo3Animal() {
+    document.getElementById("modalVideo3Animal").classList.toggle("show-modal");
+}
+//close button of modal of  video 4 face screen
+document.getElementById("clsBtnVideo4Face").addEventListener("click", toggleModalVideo4Face);
+function toggleModalVideo4Face() {
+    document.getElementById("modalVideo4Face").classList.toggle("show-modal");
+}
+//close button of modal of  video 4 animal  screen
+document.getElementById("clsBtnVideo4Animal").addEventListener("click", toggleModalVideo4Animal);
+function toggleModalVideo4Animal() {
+    document.getElementById("modalVideo4Animal").classList.toggle("show-modal");
+}
+//close button of modal of  video 5 face screen
+document.getElementById("clsBtnVideo5Face").addEventListener("click", toggleModalVideo5Face);
+function toggleModalVideo5Face() {
+    document.getElementById("modalVideo5Face").classList.toggle("show-modal");
+}
+//close button of modal of  video 5 animal  screen
+document.getElementById("clsBtnVideo5Animal").addEventListener("click", toggleModalVideo5Animal);
+function toggleModalVideo5Animal() {
+    document.getElementById("modalVideo5Animal").classList.toggle("show-modal");
+}
+
+function clearAll(type,tab){
+    clearButtonClicked ++;
+    
+    if(type=="face"){
+        clickedImgs = clickedFaceImages;
+        for (var n = 0; n < clickedImgs.length; n ++){
+            incrementMetric(clearedFaces, clickedImgs[n]);
+        }
+        clickedFaceImages = [];
+        
+        for(var i = currFaceButtonID - 1; i> currFaceButtonID - 10;i--){
+            var element = document.getElementById("faceBtn"+i);
+            element.classList.remove("grid-button-selected" + VERSION);
+        }
+        
+        previouslyClickedFaceButtonName = "";
+    }else{
+        if (clickedAnimalImage){
+            incrementMetric(clearedAnimals, clickedAnimalImage);
+            var element = document.getElementById(previouslyClickedAnimalButtonName);
+            element.classList.remove("grid-button-selected" + VERSION);
+        }
+        previouslyClickedAnimalButtonName = "";
+        clickedAnimalImage = "";
+    }
+}
+
+ 
+</script>
+
+</body>
+</html>

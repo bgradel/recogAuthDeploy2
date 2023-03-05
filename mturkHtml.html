@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<style>
+body {
+    background-color: black;
+  }
+  
+  #mturk_form {
+    background-color: black;
+    margin: 10px auto;
+    font-family: Raleway;
+    padding: 20px;
+    width: 70%;
+    height: 70%;
+    min-width: 300px;
+     border: 2px solid yellow;
+  }
+  
+  h1,h3 {
+    text-align: center;  
+  }
+  
+  /* Hide all steps by default: */
+  .tab {
+    display: none;
+    color: yellow;
+  }
+  
+  .my-button {
+    background-color: black;
+    color: yellow;
+    border: 2px solid yellow;
+    padding: 14px 90px;
+    font-size: 40px;
+    font-family: Raleway;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    opacity: 0.8;
+  }
+  
+  #prevBtn {
+    background-color: black;
+  }
+  
+  /* Make circles that indicate the steps of the form: */
+  .step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: black;
+    border: none;  
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+  }
+  
+  .step.active {
+    opacity: 1;
+  }
+  
+  /* Mark the steps that are finished and valid: */
+  .step.finish {
+    background-color: black;
+  }
+  
+  h1 {
+    color: yellow;
+    font-size: 45px;
+  }
+  
+  h3 {
+    color: yellow;
+    font-size: 25px;
+  }
+  
+  p{
+  color: yellow;
+  font-size: 30px;
+  }
+  
+  .grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+  }
+  .grid-item {
+  
+    padding: 5px;
+    font-size: 30px;
+    text-align: center;
+  }
+  
+  .grid-img {
+  
+      width: 100px;
+      height: 150px
+  }
+  
+  .grid-animal-img {
+  
+      width: 100px;
+      height: 150px
+  }
+  
+  .grid-button {
+    background-color: black;
+    color: yellow;
+    border: 5px solid yellow;
+    padding: 14px 90px;
+    font-size: 40px;
+    font-family: Raleway;
+    cursor: pointer;
+  }
+  
+  .grid-button-selected {
+    background-color: black;
+    color: yellow;
+    border: 5px solid green;
+    padding: 14px 90px;
+    font-size: 40px;
+    font-family: Raleway;
+    cursor: pointer;
+  }
+
+
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.1);
+  transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: black;
+  padding: 1rem 1.5rem;
+  width: 24rem;
+  border-radius: 0.5rem;
+  border: 5px solid yellow;
+
+}
+.close-button {
+  float: right;
+  width: 3.5rem;
+  line-height: 3.5rem;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  background-color: black;
+  border: 2px solid yellow;
+}
+.close-button:hover {
+  background-color: darkgray;
+}
+.show-modal {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1.0);
+  transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+.playerClass {
+	pointer-events: none;
+	postition: absolute;
+}
+
+</style>
+
+<script src="http://www.youtube.com/player_api"></script>
+
+<script>
+
+/**
+ * Gets a URL parameter from the query string
+ */
+ function turkGetParam( name, defaultValue ) { 
+       var regexS = "[\?&]"+name+"=([^&#]*)"; 
+       var regex = new RegExp( regexS ); 
+       var tmpURL = window.location.href; 
+       var results = regex.exec( tmpURL ); 
+       if( results == null ) { 
+         return defaultValue; 
+       } else { 
+         return results[1];    
+       } 
+    }
+    
+    /**
+     * URL decode a parameter
+     */
+    function decode(strToDecode)
+    {
+      var encoded = strToDecode;
+      return unescape(encoded.replace(/\+/g,  " "));
+    }
+    
+    
+    /**
+     * Returns the Mechanical Turk Site to post the HIT to (sandbox. prod)
+     */
+    function turkGetSubmitToHost() {
+        var defaultHost = "https://www.mturk.com";
+        var submitToHost = decode(turkGetParam("turkSubmitTo", defaultHost));
+        if (stringStartsWith(submitToHost, "https://")) {
+            return submitToHost;
+        }
+        if (stringStartsWith(submitToHost, "http://")) {
+            return submitToHost;
+        }
+        if (stringStartsWith(submitToHost, "//")) {
+            return submitToHost;
+        }
+        return defaultHost;
+    }
+    
+    
+    /**
+     * Sets the assignment ID in the form. Defaults to use mturk_form and submitButton
+     */ 
+    function turkSetAssignmentID( form_name, button_name ) {
+        console.log("calling setAssignmentID funtion");
+      if (form_name == null) {
+        form_name = "mturk_form";
+      }
+    
+      if (button_name == null) {
+        button_name = "submitButton";
+      }
+    
+      assignmentID = turkGetParam('assignmentId', "");
+      document.getElementById('assignmentId').value = assignmentID;
+    
+      if (assignmentID == "ASSIGNMENT_ID_NOT_AVAILABLE") { 
+        // If we're previewing, disable the button and give it a helpful message
+        btn = document.getElementById(button_name);
+        if (btn) {
+          btn.disabled = true; 
+          btn.value = "You must ACCEPT the HIT before you can submit the results.";
+        } 
+      }
+    
+      form = document.getElementById(form_name); 
+      if (form) {
+         form.action = turkGetSubmitToHost() + "/mturk/externalSubmit"; 
+      }
+    }
+    
+    // Inlined functionality for String.startsWith as IE does not support that method.
+    // Function body from:
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith#Polyfill
+    function stringStartsWith(str, search, pos) {
+        pos = (!pos || pos < 0) ? 0 : +pos;
+        return str.substring(pos, pos + search.length) === search;
+    }
+    
+    
+
+</script>
+
+<body>
+
+<form name='mturk_form' method='post' id='mturk_form' action='https://workersandbox.mturk.com/mturk/externalSubmit'>
+  <input type='hidden' value='' name='assignmentId' id='assignmentId' />
+  
+  
+
+  <!-- Screen 1: Introduction -->
+  <div class="tab">
+    <h1>Introduction</h1>
+    <p>Thank you for volunteering to participant in "Comparing Layouts for Eye Gaze-based PIN Entry for People with
+      Upper
+      Extremity Impairment" by the ASSET group at The University of Rhode Island.</p>
+    </br>
+    <p>Please read and review the informed consent form on the following page. If you have any questions or concerns,
+      please contact us before beginning the study. Thank you again for participating!</p>
+    </br></br></br>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtnIntro" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+  <!-- Screen 2: Example video -->
+  <div class="tab">
+    <h1>Let’s watch an example video</h1>
+    <div id="playerEx" class="playerClass">
+    </div>
+    </br></br></br>
+    <div id="divVideoEx" style="overflow:auto;" >
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtnVideoEx" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Example login attempt face screen -->
+  <div class="tab">
+    <div>
+      <h3>Try to login to the system based off of what you saw in the video</h3>
+      <h3>Select between 1-3 images that you think are correct</h3>
+      <div class="grid-container" id="divLoginGridEx">
+       
+      </div>
+      <div class="modal" id="modalExVideoFace">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnExVideoFace">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    </br>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab1SubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab1ClearAllBtn"  onclick="clearAll('face',1)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Screen 4: Example login attempt secondary image association screen -->
+  <div class="tab">
+    <div>
+      <h3>Try to login to the system based off of what you saw in the video</h3>
+      <h3>Select the animal that you think matches this person</h3>
+      <center><img src='' class="grid-img"  id="screen4FaceImg"/></center>
+      <div class="grid-container" id="divAnimalsGridEx">
+       
+      </div>
+      <div class="modal" id="modalExVideoAnimal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnExVideoAnimal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    </br>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab1AnimalClearAllBtn" onclick="clearAll('animal',1)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab1AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 5: Try one more time screen -->
+  <div class="tab">
+	<h1 id = 'login-statusEx'>You were successful!</h1>
+    
+    <center>
+      <img id='status-imageEx' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300"/>
+    </center>
+	<h1>Would you like to continue or try one more time?</h1>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        </br> </br> </br>
+        <button class="my-button" type="button" id="showAgainBtn" onclick="showExVideoAgain()">View example video
+          again</button>
+        </br> </br> </br>
+      </div>
+      <div style="float:right;">
+        </br> </br> </br>
+        <button class="my-button" type="button" id="nextBtnToLogin" onclick="nextPrev(1)">Continue</button>
+        </br> </br> </br>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 6: Login attempt 1 video screen -->
+  <div class="tab">
+    <h1>Let’s watch an example video</h1>
+    <div id="player1Id" class="playerClass">
+    </div>
+    </br></br></br>
+    <div id="divVideo1" style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtnVideo2" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 7: Login attempt 1 face screen-->
+  <div class="tab">
+    <div>
+      <h3>Try to login to the system based off of what you saw in the video</h3>
+      <h3>Select between 1-3 images that you think are correct</h3>
+      <div class="grid-container" id="divLoginGrid1">
+       
+      </div>
+      <div class="modal" id="modalVideo1Face">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo1Face">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    </br>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab2SubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab2ClearAllBtn" onclick="clearAll('face',2)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 8: Login attempt 1 sceondary image association screen -->
+  <div class="tab">
+    <div>
+      <h3>Try to login to the system based off of what you saw in the video</h3>
+      <h3>Select the animal that you think matches this person</h3>
+      <center><img src='' class="grid-img"  id="screen8FaceImg"/></center>
+      <div class="grid-container" id="divAnimalsGrid1">
+      </div>
+      <div class="modal" id="modalVideo1Animal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo1Animal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    </br>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab2AnimalClearAllBtn"  onclick="clearAll('animal',2)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab2AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 8: Login attempt 1 results screen -->
+  <div class="tab">
+    <h1 id='login-status1'>Login successful</h1>
+    <center>
+      <img id='status-image1' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300" />
+    </center>
+    </br></br></br>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 9: Login attempt 2 video screen -->
+  <div class="tab">
+    <h1>Let’s watch an example video</h1>
+    <div id="player2Id" class="playerClass">
+    </div>
+    </br></br></br>
+    <div  id="divVideo2" style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtnVideo3" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+
+ <!-- Screen 10: Login attempt 2 face screen -->
+  <div class="tab">
+    <div>
+      <h3>Try to login to the system based off of what you saw in the video</h3>
+      <h3>Select between 1-3 images that you think are correct</h3>
+      <div class="grid-container" id="divLoginGrid2">
+       
+      </div>
+      <div class="modal" id="modalVideo2Face">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo2Face">Close</span>
+            <h1>Please select at least one face from the grid</h1>
+        </div>
+      </div>
+    </div>
+    </br>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab3SubmitBtn"   onclick="nextPrev(1)">Submit</button>
+      </div>
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab3ClearAllBtn" onclick="clearAll('face',3)">Clear all</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 11: Login attempt 2 sceondary image association screen -->
+  <div class="tab">
+    <div>
+      <h3>Try to login to the system based off of what you saw in the video</h3>
+      <h3>Select the animal that you think matches this person</h3>
+      <center><img src='' class="grid-img"  id="screen12FaceImg"/></center>
+      <div class="grid-container" id="divAnimalsGrid2">
+      </div>
+      <div class="modal" id="modalVideo2Animal">
+        <div class="modal-content">
+            <span class="close-button" id="clsBtnVideo2Animal">Close</span>
+            <h1>Please select at least one image from the grid</h1>
+        </div>
+      </div>
+    </div>
+    </br>
+    <div style="overflow:auto;">
+      <div style="float:left;">
+        <button class="my-button" type="button" id="tab3AnimalClearAllBtn"  onclick="clearAll('animal',3)">Clear</button>
+      </div>
+      <div style="float:right;">
+        <button class="my-button" type="button" id="tab3AnimalSubmitBtn"  onclick="nextPrev(1)">Submit</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- Screen 12: Login attempt 2 results screen -->
+  <div class="tab">
+    <h1 id='login-status2'>Login successful</h1>
+    <center>
+      <img id='status-image2' src="https://raw.githubusercontent.com/yankanp/yankank.github.io/main/success.png" width="300" height="300" />
+    </center>
+    </br></br></br>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <button class="my-button" type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 13: Demographic information screen -->
+  <div class="tab">
+    <h2><label for="fname">What is your gender</label></h2><br>
+    <input type="text" id="gender" name="gender" value="">
+    <input type='hidden' value='' name='metrics' id='metrics' />
+    </br></br></br>
+    <div style="overflow:auto;">
+      <div style="float:right;">
+        <input type='hidden' value='' name='metrics' id='metrics' />
+        <p><input type='submit' id='submitButton' value='Submit' class="my-button" /></p>
+        </form>
+        <script language='Javascript'>turkSetAssignmentID();</script>
+      </div>
+</div>
+</div>
+
+
+<!-- Circles which indicates the steps of the form: -->
+<div style="text-align:center;margin-top:40px;">
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+  <span class="step"></span>
+</div>
+</form>
+
+<script>
+////////////////////////////////////////////////////////////////////////////////////
+// buildImageLists code
+////////////////////////////////////////////////////////////////////////////////////
+
+const EXAMPLE_VIDEO_FACE_IMAGES_NOT_DISTORTED = [
+    'assets/faces/user0/userPhotos/not_distorted/0.jpg',
+    'assets/faces/user0/userPhotos/not_distorted/1.jpg',
+    'assets/faces/user0/userPhotos/not_distorted/2.jpg',
+    'assets/faces/user0/chaff/not_distorted/0.jpg',
+    'assets/faces/user0/chaff/not_distorted/1.jpg',
+    'assets/faces/user0/chaff/not_distorted/2.jpg',
+    'assets/faces/user0/chaff/not_distorted/3.jpg',
+    'assets/faces/user0/chaff/not_distorted/4.jpg',
+    'assets/faces/user0/chaff/not_distorted/5.jpg',
+];
+
+const EXAMPLE_VIDEO_FACE_IMAGES_BLURRED = [
+    'assets/faces/user0/userPhotos/blur/0_blur.jpg',
+    'assets/faces/user0/userPhotos/blur/1_blur.jpg',
+    'assets/faces/user0/userPhotos/blur/2_blur.jpg',
+    'assets/faces/user0/chaff/blur/0_blur.jpg',
+    'assets/faces/user0/chaff/blur/1_blur.jpg',
+    'assets/faces/user0/chaff/blur/2_blur.jpg',
+    'assets/faces/user0/chaff/blur/3_blur.jpg',
+    'assets/faces/user0/chaff/blur/4_blur.jpg',
+    'assets/faces/user0/chaff/blur/5_blur.jpg',
+];
+  
+const DISTORTIONS = [
+    'blur',
+    'edges',
+    'polar'
+];
+  
+const NUMBER_FACE_IMAGES = 9;
+const NUMBER_ANIMAL_IMAGES = 9;
+
+const NUMBER_ANIMAL_SAMPLE_PHOTOS = 105;
+
+const ANIMAL_LOCATION = "assets/animals";
+const PASSFACES_LOCATION= "./assets/faces/passfaces";
+
+
+class AuthenticationImage { 
+      constructor(index, loc, correct) {
+          this.index = index;
+          this.location = loc;
+          this.correct = correct;
+      } 
+  }
+    AuthenticationImage.prototype.toString = function authImgToString() {
+    return this.index.toString() + ', ' + this.location + ', ' + this.correct.toString() ;
+};
+  
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function createArrayOfIndexes(size){
+    var indexes = [];
+    for (var i = 0; i < size; i++) {
+        indexes.push(i);
+    }
+    return indexes
+}
+  
+function getRandomInt(max){
+    return Math.floor(Math.random() * max);
+}
+
+function getExampleAssociationDict(numUserPhotos){
+    var exampleAssociationMap = {};
+    n = 0;
+    while(n < numUserPhotos){
+        var randomPicker = createArrayOfIndexes(NUMBER_ANIMAL_SAMPLE_PHOTOS);
+        shuffle(randomPicker);
+        const animalList = [];
+        m = 0;
+        while(m < NUMBER_ANIMAL_IMAGES){
+            index = randomPicker.pop();
+            imageLocation = ANIMAL_LOCATION + '/' + index.toString() + ".jpg";
+
+            if (m === 0){
+                animalList.push(new AuthenticationImage(index, imageLocation, true));
+            }
+            else{
+                animalList.push(new AuthenticationImage(index, imageLocation, false));
+            }
+            m ++;
+        }
+        exampleAssociationMap[n] = animalList;
+        n ++;
+    }
+    return exampleAssociationMap;
+}
+  
+class User {
+    constructor(id, numUserPhotos, numChaffPhotos) {
+        this.id = id;
+        this.numUserPhotos = numUserPhotos;
+        this.numChaffPhotos = numChaffPhotos;
+        this.assetDirectory = "assets/faces/user" + id.toString();
+        this.userDirectory = this.assetDirectory + '/' + "userPhotos";
+        this.chaffDirectory = this.assetDirectory + '/' + "chaff";
+        this.associationDict = getExampleAssociationDict(numUserPhotos);
+    }
+}
+
+class PassFacesUser {
+    constructor(id, PIN){
+        this.id=id;
+        this.correctFaces = PIN;
+    }
+}
+  
+function pickDistortion(){
+    return DISTORTIONS[getRandomInt(DISTORTIONS.length)];
+}
+  
+function chooseNumberOfUserImages(){
+    return getRandomInt(3) + 1;
+}
+
+function generateImageIndexes(numberOfImages, totalNumberOfImages){
+    var randomPicker = createArrayOfIndexes(totalNumberOfImages);
+    shuffle(randomPicker);
+
+    imageIndexList = [];
+
+    while (imageIndexList.length < numberOfImages) {
+        imageIndexList.push(randomPicker.pop());
+    }
+
+    return imageIndexList;
+} 
+  
+function getImageFileName(index, baseDirectory,  distortionType){
+    if (distortionType == 'not_distorted'){
+        return baseDirectory + '/' 
+            + distortionType + '/' 
+            + index.toString() + '.jpg';
+    }
+    else{
+        return baseDirectory + '/' 
+            + distortionType + '/'
+            + index.toString() + '_'  + distortionType + '.jpg';
+    }
+}
+  
+function getFaceImages(user, boolDistort){
+    numberOfUserImagesToChoose = chooseNumberOfUserImages();
+
+    distortionType = '';
+    if (boolDistort){
+        distortionType = pickDistortion();
+    }
+    else{
+        distortionType = 'not_distorted';
+    }
+
+    imageList = [];
+  
+    userImageIndexList = generateImageIndexes(numberOfUserImagesToChoose, user.numUserPhotos);
+    for (index in userImageIndexList){
+        imageList.push(new AuthenticationImage(index, getImageFileName(index, user.userDirectory, distortionType), true));
+    }
+
+    chaffImageIndexList = generateImageIndexes(NUMBER_FACE_IMAGES-numberOfUserImagesToChoose, user.numChaffPhotos);
+    for (index in chaffImageIndexList){
+        //Adding an offset to all chaff images so they do not get mixed up with real images in the association dict.
+        imageList.push(new AuthenticationImage(index+100, getImageFileName(index, user.chaffDirectory, distortionType), false));
+    }
+
+    shuffle(imageList);
+    return imageList;
+}
+  
+function getFaceImagesForExample(boolDistort){
+    imageList = [];
+    n = 0;
+      
+    if (boolDistort){
+
+        for (index in EXAMPLE_VIDEO_FACE_IMAGES_BLURRED){
+            loc = EXAMPLE_VIDEO_FACE_IMAGES_BLURRED[index];
+            if (loc.includes("userPhotos")){
+                imageList.push(new AuthenticationImage(n, loc, true));
+            }
+            else{
+                //Adding an offset to all chaff images so they do not get mixed up with real images in the association dict
+                imageList.push(new AuthenticationImage(n+100, loc, false));   
+            }
+            n ++;
+        }
+    }         
+    else{
+        for (index in EXAMPLE_VIDEO_FACE_IMAGES_NOT_DISTORTED){
+            loc = EXAMPLE_VIDEO_FACE_IMAGES_NOT_DISTORTED[index];
+            if (loc.includes("userPhotos")){
+                imageList.push(new AuthenticationImage(n, loc, true));
+            }
+            else{
+                //Adding an offset to all chaff images so they do not get mixed up with real images in the association dict
+                imageList.push(new AuthenticationImage(n+100, loc, false));   
+            }
+            n++;
+        }
+    }
+    shuffle(imageList);           
+    return imageList;
+}
+  
+function getAnimalImages(user, personImage){
+    //If the image is valid, we can return the association map result. Otherwise, I have to generate a bullshit one
+    animalList = [];
+    if (user.associationDict[personImage.index]){
+        animalList = user.associationDict[personImage.index];
+        shuffle(animalList);
+    }
+    else{
+        animalList = generateBullshitAnimalList();
+        user.associationDict[personImage.index] = animalList;
+    }
+    return animalList;
+}
+  
+function generateBullshitAnimalList(){
+    animalList = [];
+    var randomPicker = createArrayOfIndexes(NUMBER_ANIMAL_SAMPLE_PHOTOS);
+    shuffle(randomPicker);
+    n = 0;
+    while (n < NUMBER_ANIMAL_IMAGES){
+        index = randomPicker.pop();
+        imageLocation = ANIMAL_LOCATION + '/' + index.toString() + ".jpg";
+        animalList.push(new AuthenticationImage(index, imageLocation, false));
+        n++;
+    }
+    return animalList;
+}
+  
+function getPassFaces(indexOfTrue){
+    //var randomPicker = createArrayOfIndexes(9);
+    //shuffle(randomPicker);
+
+    var passFaceList = [];
+    for (var n = 0; n < 9; n++){
+        imageLocation = PASSFACES_LOCATION + '/' + n.toString() + ".jpg";
+        console.log(imageLocation);
+        if (n == indexOfTrue){
+            passFaceList.push(new AuthenticationImage(n, imageLocation, true));
+        }
+        else{
+            passFaceList.push(new AuthenticationImage(n, imageLocation, false));
+        }
+    }
+    shuffle(passFaceList);
+    return passFaceList;
+}
+  
+
+///////////////////////////////////////////////////////////////////////////////////
+
+const dummyFaceList=[
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/0_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/1_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/3_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/4_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/6_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/7_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/17_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/64_blur.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/fa12d7e00952c02bbae13fca5bd365b0a7d67455/img/65_blur.jpg",
+];
+
+const dummyAnimalList=[
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/0ace398f01.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/0b54dde5f5.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/0c1a3fdd20.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/1aac205025.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/2a8a6a6050.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/4cc653ca8b.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/5db978ce57.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/6c763d6f65.jpg",
+    "https://raw.githubusercontent.com/yankanp/yankank.github.io/main/sample-animals/07c29966bd.jpg"
+];
+  
+const USER0AssociationDict={
+    0: [new AuthenticationImage(13, "assets/animals/13.jpg", true),
+        new AuthenticationImage(77, "assets/animals/77.jpg", false),
+        new AuthenticationImage(78, "assets/animals/78.jpg", false),
+        new AuthenticationImage(10, "assets/animals/10.jpg", false),
+        new AuthenticationImage(55, "assets/animals/55.jpg", false),
+        new AuthenticationImage(69, "assets/animals/69.jpg", false),
+        new AuthenticationImage(38, "assets/animals/38.jpg", false),
+        new AuthenticationImage(85, "assets/animals/85.jpg", false),
+        new AuthenticationImage(50, "assets/animals/50.jpg", false)],
+        //new AuthenticationImage(6, "assets/animals/6.jpg", false)],
+
+    1: [new AuthenticationImage(93, "assets/animals/93.jpg", true),
+        new AuthenticationImage(101, "assets/animals/101.jpg", false),
+        new AuthenticationImage(90, "assets/animals/90.jpg", false),
+        new AuthenticationImage(3, "assets/animals/3.jpg", false),
+        new AuthenticationImage(91, "assets/animals/91.jpg", false),
+        new AuthenticationImage(30, "assets/animals/30.jpg", false),
+        new AuthenticationImage(80, "assets/animals/80.jpg", false),
+        new AuthenticationImage(73, "assets/animals/73.jpg", false),
+        new AuthenticationImage(82, "assets/animals/82.jpg", false)],
+        //new AuthenticationImage(10, "assets/animals/10.jpg", false)],
+
+    2: [new AuthenticationImage(51, "assets/animals/51.jpg", true),
+        new AuthenticationImage(60, "assets/animals/60.jpg", false),
+        new AuthenticationImage(9, "assets/animals/9.jpg", false),
+        new AuthenticationImage(24, "assets/animals/24.jpg", false),
+        new AuthenticationImage(75, "assets/animals/75.jpg", false),
+        new AuthenticationImage(103, "assets/animals/103.jpg", false),
+        new AuthenticationImage(80, "assets/animals/80.jpg", false),
+        new AuthenticationImage(18, "assets/animals/18.jpg", false),
+        new AuthenticationImage(102, "assets/animals/102.jpg", false)]
+        //new AuthenticationImage(104, "assets/animals/104.jpg", false)],
+}
+
+const USER1AssociationDict={
+    0: [new AuthenticationImage(100, 'assets/animals/100.jpg', true),
+        new AuthenticationImage(96, 'assets/animals/96.jpg', false),
+        new AuthenticationImage(39, 'assets/animals/39.jpg', false),
+        new AuthenticationImage(27, 'assets/animals/27.jpg', false),
+        new AuthenticationImage(29, 'assets/animals/29.jpg', false),
+        new AuthenticationImage(56, 'assets/animals/56.jpg', false),
+        new AuthenticationImage(23, 'assets/animals/23.jpg', false),
+        new AuthenticationImage(50, 'assets/animals/50.jpg', false),
+        new AuthenticationImage(32, 'assets/animals/32.jpg', false)],
+        
+    1: [new AuthenticationImage(77, 'assets/animals/77.jpg', true),
+        new AuthenticationImage(3, 'assets/animals/3.jpg', false),
+        new AuthenticationImage(100, 'assets/animals/100.jpg', false),
+        new AuthenticationImage(16, 'assets/animals/16.jpg', false),
+        new AuthenticationImage(13, 'assets/animals/13.jpg', false),
+        new AuthenticationImage(53, 'assets/animals/53.jpg', false),
+        new AuthenticationImage(45, 'assets/animals/45.jpg', false),
+        new AuthenticationImage(15, 'assets/animals/15.jpg', false),
+        new AuthenticationImage(44, 'assets/animals/44.jpg', false)],
+        
+    2: [new AuthenticationImage(95, 'assets/animals/95.jpg', true),
+        new AuthenticationImage(1, 'assets/animals/1.jpg', false),
+        new AuthenticationImage(30, 'assets/animals/30.jpg', false),
+        new AuthenticationImage(3, 'assets/animals/3.jpg', false),
+        new AuthenticationImage(84, 'assets/animals/84.jpg', false),
+        new AuthenticationImage(17, 'assets/animals/17.jpg', false),
+        new AuthenticationImage(12, 'assets/animals/12.jpg', false),
+        new AuthenticationImage(86, 'assets/animals/86.jpg', false),
+        new AuthenticationImage(37, 'assets/animals/37.jpg', false)],
+        
+    3: [new AuthenticationImage(84, 'assets/animals/84.jpg', true),
+        new AuthenticationImage(32, 'assets/animals/32.jpg', false),
+        new AuthenticationImage(31, 'assets/animals/31.jpg', false),
+        new AuthenticationImage(98, 'assets/animals/98.jpg', false),
+        new AuthenticationImage(92, 'assets/animals/92.jpg', false),
+        new AuthenticationImage(17, 'assets/animals/17.jpg', false),
+        new AuthenticationImage(34, 'assets/animals/34.jpg', false),
+        new AuthenticationImage(36, 'assets/animals/36.jpg', false),
+        new AuthenticationImage(89, 'assets/animals/89.jpg', false)],
+        
+    4: [new AuthenticationImage(35, 'assets/animals/35.jpg', true),
+        new AuthenticationImage(22, 'assets/animals/22.jpg', false),
+        new AuthenticationImage(94, 'assets/animals/94.jpg', false),
+        new AuthenticationImage(23, 'assets/animals/23.jpg', false),
+        new AuthenticationImage(61, 'assets/animals/61.jpg', false),
+        new AuthenticationImage(52, 'assets/animals/52.jpg', false),
+        new AuthenticationImage(76, 'assets/animals/76.jpg', false),
+        new AuthenticationImage(101, 'assets/animals/101.jpg', false),
+        new AuthenticationImage(60, 'assets/animals/60.jpg', false)]
+}
+
+var VERSIONS = ["Distorted", "Undistorted", "PassFaces"] //["Distorted","Undistorted","DistortionOnly","PassFaces"];
+var DISTORT_FACES = false;
+var VERSION = 0;
+
+var currentFaceImages = [];
+var clickedFaceImages = [];
+
+var animalImagesShown = [];
+var clickedAnimalImage;
+
+var currFaceButtonID = 0;
+var currAnimalButtonID = 0;
+
+var previouslyClickedAnimalButtonName = "";
+var previouslyClickedFaceButtonName = "";
+
+var deselectedFaces = {};
+var deselectedAnimals = {};
+
+var numTimesAnimalsDeselected = 0;
+var numTimesFacesDeselected = 0;
+
+var clearedAnimals = [];
+var clearedFaces = [];
+
+var passFaceIndex = -1;
+var clickedPassFaces = [];
+
+//assignVersionRandomly();
+
+var USER1 = new User(1, 5, 22);
+USER1.associationDict = USER1AssociationDict;
+var USER0 = new User(0, 3, 6);
+USER0.associationDict = USER0AssociationDict;
+
+var PASSFACE_USER0 = new PassFacesUser(0, [3, 3, 4, 1]);
+var PASSFACE_USER1 = new PassFacesUser(1, [6, 3, 7, 7]);
+numTimesViewingExample = 1;
+numAttempts = -1; //Negative numbers for example attempts, positive numbers for other attempts
+clearButtonClicked = 0;
+
+var metrics = {"TimeElapsed":{}, 
+    "FacesShown":{}, 
+    "FacesSelected":{},
+    "FacesDeselected":{},
+    "AnimalsShown":{},
+    "AnimalSelected":{},
+    "AnimalDeselected":{},
+    "numberOfTimesViewingExample":1,
+    "ExampleValidation":{},
+    "Attempts":{},
+    "AttemptAccuracyFaces":{},
+    "AnimalAccurate":{},
+    "clearButtonClicks" : {},
+    "animalsCleared" : {},
+    "facesCleared": {},
+    "Browser":{},
+    "ScreenSize":{},
+} //Temporary way to store metrics to make sure we are getting the correct ones until we decide where to write them too
+
+function assignVersionRandomly(){
+    var versionIndex = getRandomInt(VERSIONS.length);
+    if (VERSIONS[versionIndex] == "Distorted"){
+        DISTORT_FACES = true;
+    }
+    VERSION = versionIndex;
+}
+ 
+function incrementMetric(metric, img){
+    if (metric[img.toString()]){
+        metric[img.toString()] = metric[img.toString()] + 1;
+    }
+    else{
+        metric[img.toString()] = 1;
+    }
+} 
+
+function facegridItemClick(btnName, index, tab, faceImg){
+    var element = document.getElementById(btnName);
+    element.classList.toggle("grid-button-selected");
+    if (VERSIONS[VERSION] == "Distorted" || VERSIONS[VERSION] == "Undistorted"){
+        if (clickedFaceImages.includes(faceImg)){
+            var facePosition = clickedFaceImages.indexOf(faceImg);
+            if (facePosition !== -1){
+                clickedFaceImages.splice(facePosition, 1);
+                incrementMetric(deselectedFaces, faceImg);
+            }
+        }
+        else {
+            clickedFaceImages.push(faceImg);
+        }
+    }
+
+    else if (VERSIONS[VERSION] == "PassFaces"){
+        if (btnName == previouslyClickedFaceButtonName){
+            var element = document.getElementById(previouslyClickedFaceButtonName);
+            element.classList.remove("grid-button-selected");
+            previouslyClickedFaceButtonName = "";
+            clickedPassFaces.splice(passFaceIndex, 1);
+        }
+        else{
+            if (previouslyClickedFaceButtonName != ""){
+                var element = document.getElementById(previouslyClickedFaceButtonName);
+                element.classList.remove("grid-button-selected");
+            }
+            clickedPassFaces[passFaceIndex] = faceImg;
+            previouslyClickedFaceButtonName = btnName;
+        }
+    }
+    //For Debug
+    console.log(faceImg.correct);
+}
+
+function animalGridItemClick(btnName, index,tab, animalImg){
+    if (btnName == previouslyClickedAnimalButtonName){
+        var element = document.getElementById(previouslyClickedAnimalButtonName);
+        element.classList.remove("grid-button-selected");
+
+        incrementMetric(deselectedAnimals, clickedAnimalImage);
+        previouslyClickedAnimalButtonName = "";
+        clickedAnimalImage = "";
+    }
+    else{
+        if (previouslyClickedAnimalButtonName != "") {
+            incrementMetric(deselectedAnimals, clickedAnimalImage);
+            var element = document.getElementById(previouslyClickedAnimalButtonName);
+            element.classList.remove("grid-button-selected");
+        }
+        var element = document.getElementById(btnName);
+        element.classList.add("grid-button-selected");
+        previouslyClickedAnimalButtonName = btnName;
+      
+        clickedAnimalImage = animalImg;
+        console.log(animalImg.correct);
+    }
+}
+  
+function addFaceButtonsToPage(imgList, container, tab){
+    var g;
+    
+    for (g=0; g<imgList.length; g++) {
+        var btnId="faceBtn"+currFaceButtonID;
+        currFaceButtonID ++;
+
+        var new_grid_item = document.createElement('div');
+        new_grid_item.className = "grid-item";
+
+        var currImg = imgList[g];
+        currentFaceImages.push(currImg)
+
+        var button = document.createElement('div');
+        button.className = "grid-button";
+        button.id=btnId;
+        button.onclick = (function (btnId,index,tab,faceImg) {
+            return function () {
+                facegridItemClick(btnId,index,tab,faceImg);
+            };
+        })(btnId,g,tab,currImg);
+
+
+        var img = document.createElement('img');
+        img.className = "grid-img";
+        img.src = imgList[g].location;
+        button.appendChild(img);
+        new_grid_item.appendChild(button);
+        container.appendChild(new_grid_item);
+    }
+}
+
+function createFacePage(divName, tab){
+    var container = document.getElementById(divName);
+    imgList = getFaceImages(USER1, DISTORT_FACES);
+    
+    currentFaceImages = [];
+    clickedFaceImages = [];
+    
+    addFaceButtonsToPage(imgList, container, tab);
+}
+
+function addAnimalButtonsToPage(animalList, container, tab){
+    var  a;
+    for (a=0; a<animalList.length; a++) {
+        var btnId="animalBtn"+currAnimalButtonID;
+        currAnimalButtonID ++;
+        
+        var new_grid_item = document.createElement('div');
+        new_grid_item.className = "grid-item";
+
+        var button = document.createElement('div');
+        button.className = "grid-button";
+        button.id=btnId;
+        button.onclick = (function (btnId,index,tab, animalImg) {
+            return function () {
+                animalGridItemClick(btnId,index,tab, animalImg);
+            };
+        })(btnId,a,tab,animalList[a]);
+
+
+        var img = document.createElement('img');
+        img.className = "grid-img";
+        img.src = animalList[a].location;
+        button.appendChild(img);
+        new_grid_item.appendChild(button);
+        
+        container.appendChild(new_grid_item);
+    }
+    animalImagesShown = animalList;
+}
+
+function createAnimalPage(faceImgElement, divName, tab){
+    clickedAnimalImage = "";
+    previouslyClickedAnimalButtonName = ""
+
+    var chosenFace = clickedFaceImages[getRandomInt(clickedFaceImages.length)];
+
+    document.getElementById(faceImgElement).src = chosenFace.location;
+
+    var container = document.getElementById(divName);
+
+    animalImgs = getAnimalImages(USER1, chosenFace);
+    addAnimalButtonsToPage(animalImgs, container, tab);
+}
+
+function validateLoginAttempt(){
+    var loginCorrect = true;
+    if (clickedAnimalImage && clickedFaceImages.length > 0){
+        for (var i = 0; i < clickedFaceImages.length; i ++){
+            //make sure everything in clicked faces is correct
+            loginCorrect = loginCorrect && clickedFaceImages[i].correct;
+        }
+        for (var j = 0; j < currentFaceImages.length; j ++){
+            //make sure that none of the correct faces are missing from clickedfaces
+            if (!clickedFaceImages.includes(currentFaceImages[j])){
+                loginCorrect = loginCorrect && !currentFaceImages[j].correct;
+            }
+        }
+        //Check if the animal image is correct
+        loginCorrect = loginCorrect && clickedAnimalImage.correct;
+    }
+    else{
+        loginCorrect = false;
+    }
+    return loginCorrect;
+}
+
+function validatePassFaces(){
+    var loginCorrect = true;
+    if (passFaceList.length == 0){
+        return false;
+    }
+    for (var i = 0; i < passFaceList; i++){
+        loginCorrect = loginCorrect && passFaceList[i].correct;
+    }
+    return loginCorrect;
+}
+
+function calculateAttemptAccuracy(){
+    //(# of Targets Clicked) / (Total # of Targets + # of Distractors clicked) 
+    var targetsClicked = 0;
+    var distractorsClicked = 0;
+    for (var n=0; n < clickedFaceImages.length; n++){
+        if (clickedFaceImages[n].correct){
+            targetsClicked ++;
+        }
+        else{
+            distractorsClicked ++;
+        }
+    }
+    var totalTargets = 0;
+    for (var n=0; n < currentFaceImages.length; n ++){
+        if (currentFaceImages[n].correct){
+            totalTargets ++;
+        }
+    }
+    return targetsClicked / (totalTargets + distractorsClicked);
+}
+
+function UpdateValidationScreen(statusMessageID, statusImageID){
+    validation = validateLoginAttempt();
+    if (!validation){
+        document.getElementById(statusMessageID).innerHTML = "Login not successful";
+        document.getElementById(statusImageID).src = "./assets/icons/X.png";
+    }
+    else {
+        //Move to the end
+    }
+}
+
+function playVideo(nextButtonDiv, videoDiv, youtubeVideoID){
+    document.getElementById(nextButtonDiv).style.display = "none";
+    // This code loads the IFrame Player API code asynchronously.
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    var player;
+    player =new YT.Player(videoDiv, {
+        height: '600',
+        width: '100%',
+        videoId: youtubeVideoID,
+        playerVars: { 'autoplay': 1, 'controls': 0, 'disablekb': 1, "modestbranding":1, "rel":0},
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+    });
+
+    // hide next button
+    function onPlayerReady(event) {
+        // document.getElementById("divVideoEx").style.display = "none";
+
+        // For debugging
+        document.getElementById(nextButtonDiv).style.display = "block";
+    }
+    // when video ends
+    function onPlayerStateChange(event) {        
+        if(event.data === 0) {   
+            document.getElementById(videoDiv).style.visibility = "hidden";
+            document.getElementById(nextButtonDiv).style.display = "block";
+        }
+    }
+}
+    
+function updateMetricsOnValidation(){
+    
+    attempts = metrics["Attempts"]
+    validation = validateLoginAttempt();
+    attempts[numAttempts] = validation;
+    
+    faceMetrics = metrics["FacesSelected"];
+    faceMetrics[numAttempts] = clickedFaceImages;
+    
+    selectedAnimals = metrics["AnimalSelected"];
+    selectedAnimals[numAttempts] = clickedAnimalImage;
+    
+    animalCorrect = metrics["AnimalAccurate"];
+    animalCorrect[numAttempts] = clickedAnimalImage.correct;
+    
+    animalShown = metrics["AnimalsShown"];
+    animalShown[numAttempts] = animalList;
+    
+    faceShown = metrics["FacesShown"]   
+    faceShown[numAttempts] = currentFaceImages;
+    
+    clearButton = metrics["clearButtonClicks"]
+    clearButton[numAttempts] = clearButtonClicked;
+    clearButtonClicked = 0;
+    
+    deselectedAnimalMetric = metrics["AnimalDeselected"]
+    deselectedAnimalMetric[numAttempts] = deselectedAnimals;
+    deselectedAnimals = [];
+    
+    deselectedFaceMetric = metrics["FacesDeselected"]
+    deselectedFaceMetric[numAttempts] = deselectedFaces;
+    deselectedFaces = [];
+    
+    clearedFaceMetric = metrics["facesCleared"]
+    clearedFaceMetric[numAttempts] = clearedFaces;
+    clearedFaces = [];
+    
+    clearedAnimalMetric = metrics["animalsCleared"]
+    clearedAnimalMetric[numAttempts] = clearedAnimals;
+    clearedAnimals = [];
+
+    
+    accuracyMetric = metrics["AttemptAccuracyFaces"];
+    if (validation){
+        accuracyMetric[numAttempts] = 1;
+    }
+    else{
+        accuracyMetric[numAttempts] = calculateAttemptAccuracy();
+    }
+    console.log(metrics);
+    numAttempts ++;
+    
+}
+
+var currentTab = 0; // Current tab is set to be the first tab (0)
+showTab(currentTab); // Display the current tab
+var start =  Date.now();
+
+function showTab(n) {
+    // This function will display the specified tab of the form...
+    var x = document.getElementsByClassName("tab");
+    x[n].style.display = "block";
+}
+
+function createPassFacesPage(indexOfTrue, divName, tab){
+    passFaces = getPassFaces(indexOfTrue);
+    previouslyClickedFaceButtonName = "";
+
+    var container = document.getElementById(divName);
+
+    addFaceButtonsToPage(passFaces, container, tab);
+}
+var TABS=["INTRODUCTION","VIDEO_EX","FACE_EX","ANIMAL_EX","STATUS_EX","VIDEO_1","FACE_1","ANIMAL_1","STATUS_1","VIDEO_2","FACE_2","ANIMAL_2","STATUS_2","DEMOGRAPHIC"]
+
+function getTabName(currentTabNumber){
+    return TABS[currentTabNumber];
+}
+
+function nextPrev(n) {
+    if(n!=0){
+        var elapsed =( Date.now() - start)/1000;
+        console.log('Time spent on screen '+ (currentTab+1) +' is '+ elapsed);
+        timeDict = metrics["TimeElapsed"];
+        timeDict[currentTab] = {"time":elapsed,"tabName":getTabName(currentTab)};
+             
+    }
+    start = Date.now();
+    var tabName=getTabName(currentTab+1);
+    switch (tabName) {
+        case "VIDEO_EX":
+            playVideo("divVideoEx", 'playerEx', 'oGl48CrScHg');
+            break;
+        case "FACE_EX":
+            //Example face page
+            var container = document.getElementById("divLoginGridEx");
+
+            var x = document.getElementsByClassName("tab");
+            x[currentTab].style.display = "none";
+
+        
+            if (VERSIONS[VERSION] == "Distorted" || VERSIONS[VERSION] == "Undistorted"){
+                clickedFaceImages = [];
+                currentFaceImages = [];
+                imgList = getFaceImagesForExample(DISTORT_FACES);// getPassFaces(0);
+            
+                if (numTimesViewingExample > 1){
+                    container.innerHTML = "";
+                }
+                addFaceButtonsToPage(imgList, container, 1);
+            }
+            else if (VERSIONS[VERSION] == "PassFaces") {
+
+                if (passFaceIndex >= 0){
+                    if(!clickedPassFaces[passFaceIndex]){
+                        var modal = document.getElementById("modalExVideoFace");
+                        modal.classList.toggle("show-modal");
+            
+                        return false;
+                    }
+                    container.innerHTML = "";
+                }
+                if (passFaceIndex < 3){
+                    clickedFaceImages = [];
+                    currentFaceImages = [];
+                    createPassFacesPage(PASSFACE_USER0.correctFaces[passFaceIndex], "divLoginGridEx", 1);
+                    passFaceIndex ++;
+                    showTab(currentTab+1);
+                    return;
+                }
+                else{
+                    passFaceIndex = 0;
+                
+                    // This function will figure out which tab to display
+                    var x = document.getElementsByClassName("tab");
+                    x[currentTab].style.display = "none";
+                    x[currentTab+1].style.display = "none";
+                    x[currentTab+2].style.display = "none";
+                    currentTab = currentTab + 3;
+                    showTab(currentTab);
+                    return
+                }
+            }
+            break;
+        case "ANIMAL_EX":
+            //Example Animal Page
+            if (VERSIONS[VERSION] == "Distorted" || VERSIONS[VERSION] == "Undistorted"){
+                if(clickedFaceImages.length==0){
+                    var modal = document.getElementById("modalExVideoFace");
+                    modal.classList.toggle("show-modal");
+                    return false;
+                }
+                var chosenFace = clickedFaceImages[getRandomInt(clickedFaceImages.length)];
+                document.getElementById("screen4FaceImg").src = chosenFace.location;
+                var container = document.getElementById("divAnimalsGridEx");
+                animalImgs = getAnimalImages(USER0, chosenFace);
+
+                if (numTimesViewingExample > 1){
+                    container.innerHTML = "";
+                }
+                addAnimalButtonsToPage(animalImgs, container, 1);
+            }
+            break;
+        case "STATUS_EX":
+            if (VERSIONS[VERSION] == "Distorted" || VERSIONS[VERSION] == "Undistorted"){
+                if(!clickedAnimalImage){
+                    var modal = document.getElementById("modalExVideoAnimal");
+                    modal.classList.toggle("show-modal");
+                    return false;
+                }
+                else{
+                    metrics["numberOfTimesViewingExample"] = numTimesViewingExample;
+                    validation = validateLoginAttempt();
+                    exampleResults = metrics["ExampleValidation"];
+                    exampleResults[numTimesViewingExample] = validation;
+                    updateMetricsOnValidation();
+                    if (!validation){
+                        document.getElementById('login-statusEx').innerHTML = "Login not successful";
+                        document.getElementById('status-imageEx').src = "./assets/icons/X.png";
+                    }
+                }
+            }
+            else if (VERSIONS[VERSION] == "PassFaces"){
+                validation = validatePassFaces();
+                if (!validation){
+                    document.getElementById('login-statusEx').innerHTML = "Login not successful";
+                    document.getElementById('status-imageEx').src = "./assets/icons/X.png";
+                }
+                passFaceList = [];
+            }
+            break;
+        case "VIDEO_1":
+            playVideo("divVideo1", 'player1Id', 'dXl23o6liSA');
+            break;
+        case "FACE_1":
+            createFacePage("divLoginGrid1", 5);
+            break;
+        case "ANIMAL_1":
+            if(clickedFaceImages.length==0){
+                var modal = document.getElementById("modalVideo1Face");
+                modal.classList.toggle("show-modal");
+                return false;
+            }
+            else {
+                createAnimalPage("screen8FaceImg", "divAnimalsGrid1", 2);
+            }
+            break;
+        case "STATUS_1":
+            numAttempts = 1;
+            if(!clickedAnimalImage){
+                var modal = document.getElementById("modalVideo1Animal");
+                modal.classList.toggle("show-modal");
+                return false;
+            }
+            else{
+                UpdateValidationScreen('login-status1', 'status-image1');
+                updateMetricsOnValidation();
+            }
+            break;
+        case "VIDEO_2":
+            playVideo("divVideo2", 'player2Id', 'dXl23o6liSA');
+            break;
+        case "FACE_2":
+            createFacePage("divLoginGrid2", 9);
+            break;
+        case "ANIMAL_2":
+            if(clickedFaceImages.length==0){
+                var modal = document.getElementById("modalVideo2Face");
+                modal.classList.toggle("show-modal");
+                
+                return false;
+            }
+            else {
+                createAnimalPage("screen12FaceImg", "divAnimalsGrid2", 3);
+            }
+            break;
+        case "DEMOGRAPHIC":
+            if(!clickedAnimalImage){
+                var modal = document.getElementById("modalVideo2Animal");
+                modal.classList.toggle("show-modal");
+                return false;
+            }
+            else{
+                 //set the screen size and browser details to metrics when submitting the form
+                metrics["Browser"] = navigator.userAgent;
+                metrics["ScreenSize"] = "Browser width: " + window.innerWidth + ", height: " + window.innerHeight + ".";
+                document.getElementById('metrics').value = JSON.stringify(metrics);    
+                UpdateValidationScreen('login-status2', 'status-image2');
+                updateMetricsOnValidation()
+                //TO DO: Add the demographic page time elapsed before form submit using custom submit fucntion
+            }
+            break;
+        default:
+            break;
+    }
+
+    // This function will figure out which tab to display
+    var x = document.getElementsByClassName("tab");
+
+    // Hide the current tab:
+    x[currentTab].style.display = "none";
+    // Increase or decrease the current tab by 1:
+    currentTab = currentTab + n;
+    // if you have reached the end of the form...
+    if (currentTab >= x.length) {
+        // ... the form gets submitted:
+        document.getElementById("mturk_form").submit();
+        return false;
+    }
+    // Otherwise, display the correct tab:
+    showTab(currentTab);
+}
+
+function showExVideoAgain() {
+    // This function will figure out which tab to display
+    numTimesViewingExample ++;
+    metrics["numberOfTimesViewingExample"] = numTimesViewingExample;
+    numAttempts -=2;
+    clearButtonClicked -= 2;
+
+    clearAll("face", 1);
+    clearAll("animal", 1);
+    var x = document.getElementsByClassName("tab");
+
+    // Hide the current tab:
+    x[currentTab].style.display = "none";
+    // Increase or decrease the current tab by 1:
+    currentTab = 1;
+
+    // Otherwise, display the correct tab:
+    showTab(currentTab);
+}
+   
+    
+//close button of modal of example video face screen
+document.getElementById("clsBtnExVideoFace").addEventListener("click", toggleModalExVideoFace);
+function toggleModalExVideoFace() {
+    document.getElementById("modalExVideoFace").classList.toggle("show-modal");
+}
+//close button of modal of example video face screen
+document.getElementById("clsBtnExVideoAnimal").addEventListener("click", toggleModalExVideoAnimal);
+function toggleModalExVideoAnimal() {
+    document.getElementById("modalExVideoAnimal").classList.toggle("show-modal");
+}
+//close button of modal of  video 1 face screen
+document.getElementById("clsBtnVideo1Face").addEventListener("click", toggleModalVideo1Face);
+function toggleModalVideo1Face() {
+    document.getElementById("modalVideo1Face").classList.toggle("show-modal");
+}
+//close button of modal of  video 1 face screen
+document.getElementById("clsBtnVideo1Animal").addEventListener("click", toggleModalVideo1Animal);
+function toggleModalVideo1Animal() {
+    document.getElementById("modalVideo1Animal").classList.toggle("show-modal");
+}
+
+//close button of modal of  video 1 face screen
+document.getElementById("clsBtnVideo2Face").addEventListener("click", toggleModalVideo2Face);
+function toggleModalVideo2Face() {
+    document.getElementById("modalVideo2Face").classList.toggle("show-modal");
+}
+//close button of modal of  video 1 face screen
+document.getElementById("clsBtnVideo2Animal").addEventListener("click", toggleModalVideo2Animal);
+function toggleModalVideo2Animal() {
+    document.getElementById("modalVideo2Animal").classList.toggle("show-modal");
+}
+
+function clearAll(type,tab){
+    clearButtonClicked ++;
+    if(type=="face"){
+        for (var n = 0; n < clickedFaceImages.length; n ++){
+            incrementMetric(clearedFaces, clickedFaceImages[n]);
+        }
+        clickedFaceImages = [];
+        for(var i = currFaceButtonID - 1; i> currFaceButtonID - 10;i--){
+            var element = document.getElementById("faceBtn"+i);
+            element.classList.remove("grid-button-selected");
+        }
+        
+        previouslyClickedFaceButtonName = "";
+    }else{
+        if (clickedAnimalImage){
+            incrementMetric(clearedAnimals, clickedAnimalImage);
+            var element = document.getElementById(previouslyClickedAnimalButtonName);
+            element.classList.remove("grid-button-selected");
+        }
+        previouslyClickedAnimalButtonName = "";
+        clickedAnimalImage = "";
+    }
+}
+  </script>
+
+</body>
+</html>

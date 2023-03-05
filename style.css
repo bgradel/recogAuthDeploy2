@@ -1,0 +1,316 @@
+body {
+    background-color: black;
+}
+  
+#mturk_form {
+    background-color: black;
+    margin: 2px 2px 2px 2px;
+    font-family: Raleway;
+    padding: 2px;
+    width: 95vw;
+    height: 95vh;
+    min-width: 300px;
+    border: 2px solid yellow;
+}
+
+h1,h2, h3 {
+    text-align: center;  
+}
+
+/* Hide all steps by default: */
+.tab {
+    display: none;
+    color: yellow;
+    width: 100%;
+    height: 100%;
+    max-height:100%;
+    
+}
+
+.my-button {
+    background-color: black;
+    color: yellow;
+    border: 5px solid yellow;
+    padding: 12px 30px;
+    font-size: 20px;
+    font-family: Raleway;
+    font-weight:bold;
+    cursor: pointer;
+    margin:5px;
+}
+
+.my-button-disabled {
+    background-color: grey;
+    color: yellow;
+    border: 5px solid yellow;
+    padding: 12px 30px;
+    font-size: 20px;
+    font-family: Raleway;
+    font-weight:bold;
+    cursor: pointer;
+}
+.timer{
+    background-color: grey;
+    color: yellow;
+    border: 5px solid yellow;
+    font-size: 20px;
+    width: 100px;
+    height: 70px;
+    font-family: Raleway;
+    font-weight:bold;
+    cursor: pointer;
+    float:right;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+#prevBtn {
+    background-color: black;
+}
+
+/* Make circles that indicate the steps of the form: */
+.step {
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: black;
+    border: none;  
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 0.5;
+}
+
+.step.active {
+    opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+    background-color: black;
+}
+
+h1 {
+    font-size: 25px;
+    margin: 10px 10px 10px 10px;
+}
+
+h2 {
+    font-size: 20px;
+    margin: 10px 10px 10px 10px;
+}
+
+h3 {
+    font-size: 18px;
+    margin: 10px 10px 10px 10px;
+}
+
+p{
+    font-size: 16px;
+    margin: 10px 10px 10px 10px;
+}
+
+li{
+    font-size: 14px;
+    margin: 10px 10px 10px 10px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 2px;
+}
+.grid-container-display{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 2px;
+}
+
+.grid-container-animal {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    padding: 2px;
+}
+
+.grid-item {
+    padding: 5px;
+    font-size: 1px;
+    text-align: center;
+}
+
+.display-img {
+    width: 18vh;
+    height: 20vh;
+}
+
+.grid-img {
+    width: 12vh;
+    height: 18vh;
+}
+
+.grid-animal-img {
+    width: 25vh;
+    height:20vh;
+}
+
+.grid-button0 {
+    background-color: black;
+    color: yellow;
+    border: 5px solid yellow;
+    font-size: 18px;
+    font-family: Raleway;
+    cursor: pointer;
+}
+
+.grid-button1 {
+    background-color: black;
+    color: rgb(135, 233, 17);
+    border: 5px solid rgb(135, 233, 17);
+    font-size: 18px;
+    font-family: Raleway;
+    cursor: pointer;
+}
+
+.grid-button2 {
+    background-color: black;
+    color: cyan;
+    border: 5px solid cyan;
+    font-size: 18px;
+    font-family: Raleway;
+    cursor: pointer;
+}
+
+.grid-button3 {
+    background-color: black;
+    color: orange;
+    border: 5px solid orange;
+    font-size: 18px;
+    font-family: Raleway;
+    cursor: pointer;
+}
+
+.grid-button-selected0 {
+    background-color: rgba(135, 233, 17,0.4);
+    color: rgb(135, 233, 17);
+    border: 5px solid;
+    border-color:rgb(135, 233, 17);
+    font-size: 18px;
+    font-family: Raleway;
+    cursor: pointer;
+}
+
+.grid-button-selected1 {
+    background-color: rgba(255,255,0,0.4); 
+    color: yellow;
+    border: 5px solid yellow;
+    font-size: 18px;
+    font-family: Raleway;
+    cursor: pointer;
+}
+
+.grid-button-selected2 {
+    background-color: rgba(255, 165, 0,0.4); 
+    color: orange;
+    border: 5px solid orange;
+    font-size: 18px;
+    font-family: Raleway;
+    cursor: pointer;
+}
+
+.grid-button-selected3 {
+    background-color: rgba(137, 49, 239,0.4); 
+    color: rgb(137, 49, 239);
+    border: 5px solid;
+    border-color: rgb(137, 49, 239);
+    font-size: 18px;
+    font-family: Raleway;
+    cursor: pointer;
+}
+
+
+.modal {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(1.1);
+    transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: black;
+    padding: 1rem 1.5rem;
+    width: 24rem;
+    border-radius: 0.5rem;
+    border: 5px solid yellow;
+}
+.close-button {
+    float: right;
+    width: 3.5rem;
+    line-height: 3.5rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    background-color: black;
+    border: 2px solid yellow;
+}
+.close-button:hover {
+    background-color: darkgray;
+}
+.show-modal {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1.0);
+    transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+.playerClass {
+    pointer-events: none;
+    postition: absolute;
+}
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 50%;
+  padding: 5px;
+}
+.consent-box{
+    border-color: yellow;
+}
+
+.container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding-top: 460px;  /*1:1 Aspect Ratio */
+}
+
+.survey-container{
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 65vh;
+    border: 2px solid yellow;
+    
+    /*padding-top: 460px;  /*1:1 Aspect Ratio */
+}
+  
+.responsive-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
