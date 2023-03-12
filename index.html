@@ -1772,18 +1772,41 @@ function updateMetricsOnValidation(validation){
     clearedAnimalMetric = metrics["animalsCleared"];
     accuracyMetric = metrics["AttemptAccuracyFaces"];
     
-    if (pageIndex == 0 || pageIndex == 1){
+    if (attempts[numAttempts] == null){
         attempts[numAttempts] = {};
+    }
+    
+    if (faceMetrics[numAttempts] == null){
         faceMetrics[numAttempts] = {};
+    }
+    if (selectedAnimals[numAttempts] == null){
         selectedAnimals[numAttempts] = {};
+    }
+    if (animalCorrect[numAttempts] == null){
         animalCorrect[numAttempts] = {};
+    }
+    if (animalShown[numAttempts] == null){
         animalShown[numAttempts] = {};
+    }
+    if (faceShown[numAttempts] == null){
         faceShown[numAttempts] = {};
+    }
+    if (clearButton[numAttempts] == null){
         clearButton[numAttempts] = {};
+    }
+    if(deselectedAnimalMetric[numAttempts] == null){
         deselectedAnimalMetric[numAttempts] = {};
+    }
+    if(deselectedFaceMetric[numAttempts] == null){
         deselectedFaceMetric[numAttempts] = {};
+    }
+    if (clearedFaceMetric[numAttempts] == null){
         clearedFaceMetric[numAttempts] = {};
+    }
+    if (clearedAnimalMetric[numAttempts] == null){
         clearedAnimalMetric[numAttempts] = {};
+    }
+    if(accuracyMetric[numAttempts] ==null){
         accuracyMetric[numAttempts] = {};
     }
     
@@ -2170,7 +2193,7 @@ function nextPrev(n) {
                 validation = validateLoginAttempt();
                 UpdateValidationScreen(validation, 'login-status5', 'status-image5', 'login-tries5', 'continueText5');
                 updateMetricsOnValidation(validation);
-                if (previousAttemptsFinished==5){
+                if (validation || previousAttemptsFinished==5){
                     metrics["Browser"] = navigator.userAgent;
                     metrics["ScreenSize"] = "Browser width: " + window.innerWidth + ", height: " + window.innerHeight + ".";
                     sendEmail();
@@ -2184,6 +2207,8 @@ function nextPrev(n) {
                 moveToTab("FACE_5");
                 return;
             }
+            metrics["Browser"] = navigator.userAgent;
+            metrics["ScreenSize"] = "Browser width: " + window.innerWidth + ", height: " + window.innerHeight + ".";
             sendEmail();
             break;
             //document.getElementById('metrics').value = JSON.stringify(metrics);
