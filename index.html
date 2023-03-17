@@ -1216,6 +1216,63 @@ const USER3AssociationDict={
         new AuthenticationImage(32, getAnimalImageLink(32), false),
         new AuthenticationImage(71, getAnimalImageLink(71), false)],
         
+    1: [new AuthenticationImage(7, getAnimalImageLink(7), true),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(100, getAnimalImageLink(100), false),
+        new AuthenticationImage(16, getAnimalImageLink(16), false),
+        new AuthenticationImage(13, getAnimalImageLink(13), false),
+        new AuthenticationImage(53, getAnimalImageLink(53), false),
+        new AuthenticationImage(45, getAnimalImageLink(45), false),
+        new AuthenticationImage(15, getAnimalImageLink(15), false),
+        new AuthenticationImage(44, getAnimalImageLink(44), false),
+        new AuthenticationImage(8, getAnimalImageLink(8), false)],
+        
+    2: [new AuthenticationImage(11, getAnimalImageLink(11), true),
+        new AuthenticationImage(1, getAnimalImageLink(1), false),
+        new AuthenticationImage(30, getAnimalImageLink(30), false),
+        new AuthenticationImage(3, getAnimalImageLink(3), false),
+        new AuthenticationImage(84, getAnimalImageLink(84), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(12, getAnimalImageLink(12), false),
+        new AuthenticationImage(86, getAnimalImageLink(86), false),
+        new AuthenticationImage(37, getAnimalImageLink(37), false),
+        new AuthenticationImage(21, getAnimalImageLink(21), false)],
+        
+    3: [new AuthenticationImage(19, getAnimalImageLink(19), true),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(31, getAnimalImageLink(31), false),
+        new AuthenticationImage(98, getAnimalImageLink(98), false),
+        new AuthenticationImage(92, getAnimalImageLink(92), false),
+        new AuthenticationImage(17, getAnimalImageLink(17), false),
+        new AuthenticationImage(34, getAnimalImageLink(34), false),
+        new AuthenticationImage(36, getAnimalImageLink(36), false),
+        new AuthenticationImage(7, getAnimalImageLink(7), false),
+        new AuthenticationImage(74, getAnimalImageLink(74), false)],
+        
+    4: [new AuthenticationImage(18, getAnimalImageLink(18), true),
+        new AuthenticationImage(22, getAnimalImageLink(22), false),
+        new AuthenticationImage(94, getAnimalImageLink(94), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(61, getAnimalImageLink(61), false),
+        new AuthenticationImage(52, getAnimalImageLink(52), false),
+        new AuthenticationImage(76, getAnimalImageLink(76), false),
+        new AuthenticationImage(101, getAnimalImageLink(101), false),
+        new AuthenticationImage(60, getAnimalImageLink(60), false),
+        new AuthenticationImage(40, getAnimalImageLink(40), false)]
+}
+
+const USER4AssociationDict={
+    0: [new AuthenticationImage(0, getAnimalImageLink(0), true),
+        new AuthenticationImage(96, getAnimalImageLink(96), false),
+        new AuthenticationImage(39, getAnimalImageLink(39), false),
+        new AuthenticationImage(27, getAnimalImageLink(27), false),
+        new AuthenticationImage(29, getAnimalImageLink(29), false),
+        new AuthenticationImage(56, getAnimalImageLink(56), false),
+        new AuthenticationImage(23, getAnimalImageLink(23), false),
+        new AuthenticationImage(50, getAnimalImageLink(50), false),
+        new AuthenticationImage(32, getAnimalImageLink(32), false),
+        new AuthenticationImage(71, getAnimalImageLink(71), false)],
+        
     1: [new AuthenticationImage(0, getAnimalImageLink(0), true),
         new AuthenticationImage(3, getAnimalImageLink(3), false),
         new AuthenticationImage(100, getAnimalImageLink(100), false),
@@ -1308,10 +1365,11 @@ USER2.associationDict = USER2AssociationDict;
 var USER3 = new User(3, 5, 22);
 USER3.associationDict = USER3AssociationDict;
 
+var USER4 = new User(4, 5, 22);
+USER4.associationDict = USER4AssociationDict;
 
 
-
-USERS = [USER0, USER1, USER2, USER3];
+USERS = [USER0, USER1, USER2, USER3, USER4];
 
 var CURRENT_USER = USER0;
 
